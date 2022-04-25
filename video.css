@@ -1,0 +1,265 @@
+/******************** CSS부 시작 ********************/
+/*
+    자식 노드값의 변경을 부모가 감지하는 것은 CSS3까지 와서도 불가능하다.
+    따라서 JS addEventListener로 감지해야만 한다.
+    ※ IE에서 () => {} 식, css var, for of, for in 등이 안 먹히므로, 크로스브라우징 구현 시 사용금지
+*/
+
+/* 1레벨 (기초영역 분할) */
+div#vidContainer {
+    position:relative; background:black;
+    font-size:20px; /* 순간아이콘(재생/되감기/빨리감기)들이 여기 font-size를 rem으로 내려받아 쓴다. */
+    overflow:hidden;
+    touch-action: manipulation; /* 모바일 환경에서 더블탭 시 확대 방지 */
+}
+@media (min-width:768px) { /* PC */
+    div#vidContainer { width:40rem; height:25rem; }
+}
+/* 미디어쿼리 필요 시 아래 주석대로 셋팅해주면 된다. PC/모바일(세로)/모바일(가로) 순이다.
+※ 화면 크기 분할의 기준은 아이패드 미니 (768px)
+@media (min-width:768px) {
+    div#vidContainer { width:640px; height:480px; font-size:20px; }
+}
+@media (max-width:767px) and (orientation: portrait) {
+    div#vidContainer { width:100%; height:auto; font-size:10px; }
+}
+@media (max-width:767px) and (orientation: landscape) {
+    div#vidContainer { width:100%; height:auto; font-size:10px; }
+}
+*/
+div#vidContainer > .screenLayer { /* 비디오 화면 */
+    z-index:1; position:absolute; left:0; top:0; width:100%; height:100%;
+}
+div#vidContainer > .controlsLayer { /* 비디오 전체 콘테이너 내 콘트롤박스 최상위 레이어 */
+    z-index:9; position:relative; width:100%; height:100%;
+    display:flex; flex-direction:column;
+    animation-iteration-count: 1;
+}
+
+/* 2레벨 (=콘트롤러부) */
+div#vidContainer .topBox { /* 1. 영상 제목 */
+    width:100%; height:50px;
+    color:rgba(255,255,255, 0.6);
+    font-weight:bold;
+}
+div#vidContainer .tapBox { /* 2. 중앙부 상단 클릭 대영역 */
+    display:flex; flex-direction:row;
+    justify-content:center; align-items:center; flex:1 1 auto;
+    width:100%; left:0; right:0; top:0; bottom:0;
+}
+div#vidContainer .guageBox, div#vidContainer .volumeBox { /* 3. 중앙부 하단 재생게이지 영역 (+하단부 볼륨게이지) */
+    position:relative; display:flex; align-items: center; justify-content: center;
+    width:calc(100% - 30px); height:20px; margin:5px 15px;
+}
+div#vidContainer .bottomBox { /* 4. 하단부 컨트롤러 버튼 영역 */
+    display:flex; flex-direction:row;
+    width:calc(100% - 10px); margin:5px;
+    height:40px;
+}
+
+
+
+/* 3레벨 */
+div#vidContainer .topBox > .title { /* 영상 제목 텍스트 */
+    padding:10px 15px;
+}
+div#vidContainer .tapBox > div { /* 중앙부 클릭 상세영역 */
+    width:50%; height:100%;
+    display:flex; align-items: center; justify-content: center;
+}
+div#vidContainer .guageBox > *:hover,
+div#vidContainer .volumeBox > *:hover { /* 게이지 박스 */
+    cursor:pointer;
+}
+div#vidContainer .bottomBox > div { /* 콘트롤박스 버튼들 하부레이어 */
+    display:flex; align-items: center; justify-content:center;
+}
+div#vidContainer .bottomBox > .leftBlock { /* 좌측 재생/정지/감기 버튼 레이어 */
+    width:max-content; justify-content:flex-start; 
+}
+div#vidContainer .bottomBox > .midBlock { /* 중앙부 남는 레이어 */
+    justify-content:flex-start;
+    flex:1 1 auto;
+}
+div#vidContainer .bottomBox > .rightBlock { /* 배속버튼, 풀스크린버튼 있는 레이어 */
+    position:relative; justify-content: flex-end; align-items:center;
+    margin-left:auto;
+}
+
+
+
+/* 재생 위치 게이지 */
+div#vidContainer .guageBox div,
+div#vidContainer .guageBox .fg:after,
+div#vidContainer .volumeBox div,
+div#vidContainer .volumeBox .fg:after { /* 게이지 캐리어 하위 div 전체 */
+    transition-property:height; transition-timing-function: ease-out; transition-duration: 0.08s;
+}
+div#vidContainer .guageBox > div > div,
+div#vidContainer .volumeBox > div > div { /* bg, fg 게이지 */
+    position:absolute;
+    width:auto; height:8px;
+    left:0; top:50%; transform:translateY(-50%);
+}
+div#vidContainer .guageBox > div > div.bg,
+div#vidContainer .volumeBox > div > div.bg { /* bg 게이지 */
+    z-index:0; background:white; min-width:100%; max-width:100%;
+    background: rgba(255, 255, 255, 0.3);
+}
+div#vidContainer .guageBox > div > div.fg,
+div#vidContainer .volumeBox > div > div.fg { /* fg 게이지 */
+    z-index:1; background:rgba(255, 255, 255, 0.75); width:0;
+}
+/* 재생 위치 게이지 전 영역에 마우스오버 시 (레벨 별 각각) */
+div#vidContainer .guageBox:hover > div > div,
+div#vidContainer .guageBox > div:hover > div,
+div#vidContainer .guageBox > div > div.bg:hover,
+div#vidContainer .guageBox > div > div.bg:hover + div.fg 
+div#vidContainer .volumeBox:hover > div > div,
+div#vidContainer .volumeBox > div:hover > div,
+div#vidContainer .volumeBox > div > div.bg:hover,
+div#vidContainer .volumeBox > div > div.bg:hover + div.fg { height:15px; }
+/* 게이지 끝에 똥글뱅이 */
+div#vidContainer .guageBox .fg:after,
+div#vidContainer .volumeBox .fg:after {
+    content:"";
+    display:block; position:absolute;
+    top:50%; transform:translateY(-50%); right:-7.5px;
+    width: 15px; height: 15px;
+    background: rgb(255, 255, 255);
+    border-radius:999px;
+}
+div#vidContainer .guageBox:hover .fg:after,
+div#vidContainer .volumeBox:hover .fg:after { /* 똥글뱅이 마우스오버 시 */
+    width:22px; height:22px; right:-11px;
+}
+
+
+
+/* 버튼형 전용 */
+.bottomBox > div > * { border-radius: 3px; } /* 누를 수 있는 모든 버튼 */
+div#vidContainer .bottomBox i,
+div#vidContainer .bottomBox span.posInfo,
+div#vidContainer .bottomBox .speedMenuBtn > span { /* 모든 버튼형 공통속성 */
+    display:flex; justify-content:center; align-items:center;
+    margin: 5px; border-radius: 5px;
+    font-weight:bold;
+}
+div#vidContainer .controlsLayer i { /* 컨트롤러 요소들 중 버튼형만 */
+    display: flex; justify-content: center; align-items: center;
+    font-size: 25px; line-height: 30px;
+    min-width: 30px; max-width: 30px; min-height:30px; max-height:30px;
+    margin-left:5px; margin-right:5px;
+    color:rgba(255,255,255, 0.6);
+    transition-property: all; transition-timing-function: ease-out; transition-duration: 0.08s;
+}
+div#vidContainer .controlsLayer i:hover,
+div#vidContainer .controlsLayer label:hover { /* 버튼형 호버 시 */
+    cursor:pointer;
+    transform: scale(1.3);
+    color:rgba(255,255,255, 0.95); background-color: rgba(255, 255, 255, 0.3);
+}
+.repeatLabel:hover { /* 버튼형 호버 시 반복재생 라벨은 커지지 않음 */
+    transform:none !important; background-color:transparent !important; cursor:none;
+}
+div#vidContainer .bottomBox span.posInfo { /* 재생위치 분초 표시부 */
+    margin-left: 5px; margin-right:5px; word-break: keep-all; white-space: nowrap;
+}
+#videoPlayer_repeatChkBox { display:none; } /* 반복재생 버튼 설정을 위한 체크박스 */
+#videoPlayer_repeatChkBox ~ label > i.xi-repeat { color:rgba(255,255,255, 0.3); }
+#videoPlayer_repeatChkBox:checked ~ label > i.xi-repeat { color:rgba(255,255,255, 0.75); } /* 반복재생 버튼 - 체크 off 시 투명하게, 체크했을 때 기본 */
+div#vidContainer .controlsLayer i.fullScreenBtn { /* 풀스크린 버튼 */
+    margin-left: 15px;
+}
+
+
+
+/* 배속표시부 관련 */
+div#vidContainer .bottomBox > .rightBlock,
+div#vidContainer .bottomBox .speedMenuBtn,
+div#vidContainer .bottomBox .speedMenuOptions,
+div#vidContainer .bottomBox .speedMenuOptions > span,
+div#vidContainer .bottomBox .posInfo { /* 배속박스 및 재생위치 표시부 레이아웃 전부 맞춰줌 */
+    color:rgba(255,255,255, 0.6);
+    font-size:15px; line-height:15px;
+    font-weight:bold;
+}
+div#vidContainer .bottomBox .speedMenuBtn { /* 배속박스 오픈용 라벨버튼 */
+    display:flex; justify-content:center; align-items:center;
+    min-width:40px; max-width:40px; height:20px; padding:5px;
+}
+#videoPlayer_spdChkBox { /* 배속박스 오픈용 체크박스 */
+    display:none !important;
+}
+div#vidContainer .bottomBox .speedMenuOptions { /* 배속박스 */
+    position:absolute; display:flex; justify-content: flex-start;
+    flex-direction:column-reverse; flex-wrap:wrap-reverse;
+    min-width:45px; max-width:45px; padding:5px;
+    right:45px; bottom:40px;
+    overflow:hidden; height:0;
+}
+input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions { /* 열었을 때의 배속박스 */
+    height:auto; max-height: calc(15rem - 160px) !important;
+    overflow:visible;
+}
+input#videoPlayer_spdChkBox ~ .speedMenuOptions > span { /* 열기 전의 배속박스 내 선택 항목들 */
+    display:none;
+}
+input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions > span { /* 열었을 때의 배속박스 내 선택 항목들 */
+    display:block;
+    min-width:40px; max-width:40px;
+    color:rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    margin:0; padding:5px 0;
+    text-align:center;
+}
+input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions > span:hover { /* 배속박스 내 선택 항목들 마우스오버 시 커서 */
+    cursor:pointer;
+}
+
+
+
+div#vidContainer .volumeBox {
+    width:100px;
+}
+
+
+
+/* 전체화면 모드 시 동작 설정 */
+div#vidContainer.fullScreen { /* 비디오 전체 콘테이너 */
+    z-index:99; /* 화면의 최상위에 와야 한다 */
+    position:fixed; left:0; top:0; width:100%; height:100%; /* 전체화면 */
+    background-color: black;
+}
+div#vidContainer.fullScreen > video { /* 비디오 엘리먼트 */
+    position:fixed; left:0; top:0; width:100%; height:100%;
+}
+div#vidContainer.fullScreen > .bottomBox > .rightBlock > .fullScreenBtn { /* 풀스크린 버튼 */
+    position:absolute; left:150px; bottom:20px;
+}
+
+
+
+/* 순간표시 아이콘 핸들링을 위한 CSS 설정 */
+@keyframes heartbeatFadeout { /* 애니메이션 명세서 */
+    0%   { -webkit-transform:scale(1)   ; transform:scale(1)   ; opacity:1  ; }
+    15%  { -webkit-transform:scale(1.05); transform:scale(1.05); opacity:1  ; }
+    40%  { -webkit-transform:scale(1)   ; transform:scale(1)   ; opacity:0.2; }
+    100% { visibility:hidden; opacity:0; }
+}
+/* 화면 중앙부 상태표시용 순간표시 아이콘들 공통 */
+div#vidContainer .tapBox .xi-play,
+div#vidContainer .tapBox .xi-pause,
+div#vidContainer .tapBox .xi-backward,
+div#vidContainer .tapBox .xi-forward {
+    visibility:hidden;
+    padding:1.1rem; font-size:3rem;
+    color:rgba(255, 255, 255, 0.8);
+    border-radius:500px;
+    background-color: rgba(255, 255, 255, 0.4);
+    animation-iteration-count: 1;
+}
+/* 가운데 재생아이콘 중앙정렬을 위한 설정 */
+div#vidContainer .tapBox { display:flex; justify-content:center; align-items:center; }
+div#vidContainer .tapBox .xi-play,
+div#vidContainer .tapBox .xi-pause { position:absolute; }

@@ -1,0 +1,9 @@
+/* 공통 CSS*/
+
+/* 애니메이션 */
+@keyframes fadein { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes fadeout { 0% { -webkit-opacity: 1; opacity: 1; } 100% { -webkit-opacity:0; opacity:0; } }
+@keyframes heartbeat { 0% { -webkit-transform:scale(1.05); transform:scale(1.05); } 100% { -webkit-transform:scale(1); transform:scale(1); } }
+@keyframes blinker { 50% {opacity: 0;} }
+[class*="hint--"]:before, [class*="hint--"]:after { display:none; }
+.blinkerAfter:after { animation: blinker 2s linear infinite; }

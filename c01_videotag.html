@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+
+자바스크립트 영상 재생기 v1.0
+
+[주요 기능]
+1. 다양한 기능 지원: 재생/정지/되감기/빨리감기/특정위치로 이동/배속변경/반복여부/풀스크린 등
+   ※ 재생 시점을 숫자 및 게이지로 표시하며, 게이지 클릭 시 클릭한 해당 시점으로 이동 재생
+2. 크로스브라우징 테스트 완료 : IE(11~) / Firefox / Chrome / Edge / Whale / Opera 등 주요 브라우저 모두 지원
+   ※ 모바일 T/O 필요
+3. 모바일 환경에서 터치/더블탭을 통한 조작 지원
+   ※ 모바일 T/O 필요
+4. 키보드를 통한 컨트롤러 조작 지원
+5. 기능 작동 시 피드백 애니메이션 구현 (해당 기능 버튼이 화면에 표시되는 등)
+6. 객체가 패키지 형태로 모듈화되어 다양한 환경에 손쉽게 적용 가능
+
+[미결과제]
+. 볼륨 조절
+. 버튼 마우스오버 및 타임아웃으로 떴다가 사라지는 효과 적용
+. 재생 완료 시 다시보기 버튼으로 바꾸기
+. playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
+. iOS, MacOS에서 무한로딩 현상 발생 해결
+. 미디어쿼리 똑바로 적용
+. 브라우저별 지원 코덱 정리
+(추가) 자바 연동 스트리밍 전송
+
+[추가과제] 네이버지도 사용법 익히기
+. 네이버 지도를 쓰는 상황은 주로 어떤 것이 있는가?
+. 지도를 쓸 때 주로 어떤 프로퍼티를 사용하는가?
+
+-->
+<html lang="ko">
+
+<!-- 헤더부 -->
+<head>
+
+<!-- 타이틀 -->
+<title>브라우저 별 video 태그 실험</title>
+
+<!-- 헤더 주요 정보 선언부 -->
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css"> <!-- XE-ICON -->
+<!--<link rel="stylesheet" href="XEIcon-2.2.0/xeicon.min.css"> <!-- XE-ICON -->
+<link rel="stylesheet" href="common.css"> <!-- 공통 레이아웃 -->
+<link rel="stylesheet" href="video.css"> <!-- 비디오 레이아웃 -->
+<script type="text/javascript" src="common.js"></script> <!-- 공통 라이브러리 -->
+<script type="text/javascript" src="video.js"></script> <!-- 비디오 재생기 라이브러리 -->
+
+<!-- JS -->
+<!-- 화면 크기가 동영상보다 작을 시, 화살표키를 눌렀을 때 스크롤되는 문제가 존재한다. -->
+<script type="text/javascript">
+
+window.onload = function() {
+    vid.init("asdf.mp4");
+    //rainbow("body *");
+}
+
+/******************** 비디오 라이브러리 끝 ********************/
+
+
+</script>
+
+</head>
+
+<!-- 바디부 -->
+<body>
+
+<!-- 비디오 플레이어부 시작 -->
+<div id="vidContainer">
+
+    <!-- 비디오 태그부 -->
+    <video class="screenLayer" playsinline></video>
+    <!-- 컨트롤부 -->
+    <div class="controlsLayer">
+        <div class="topBox">
+            <div class="title">영상 제목입니다</div>
+        </div>
+        <div class="tapBox">
+            <div data-area="left"><i class="xi-backward"></i></div>
+            <div data-area="right"><i class="xi-forward"></i></div>
+            <i class="xi-play"></i>
+        </div>
+        <div class="guageBox">
+            <div>
+                <div class="bg"></div>
+                <div class="fg"></div>
+            </div>
+        </div>
+        <div class="bottomBox"> <!-- 재생/정지/배속/풀스크린 등 버튼 있는 영역 -->
+            <div class="leftBlock"> <!-- 좌 플로팅 영역 -->
+                <i class="xi-play"></i>     <!-- 재생/정지 버튼 -->
+                <i class="xi-backward"></i> <!-- 뒤로 점프 버튼 -->
+                <i class="xi-forward"></i>  <!-- 앞으로 점프 버튼 -->
+                <span class="posInfo"></span> <!-- 재생위치 정보 영역 -->
+            </div>
+            <div class="midBlock"> <!-- 중간 플로팅 영역 (화면 좁을 경우 디피 안 돼도 됨) -->
+                <input id="videoPlayer_repeatChkBox" type="checkbox"/>
+                <label for="videoPlayer_repeatChkBox" class="repeatLabel">
+                    <i class="xi-repeat"></i>
+                </label>
+            </div>
+            <div class="rightBlock"> <!-- 우 플로팅 영역 -->
+                <i class="xi-volume-up volumeicon"></i>
+                <div class="volumeBox">
+                    <div>
+                        <div class="bg"></div>
+                        <div class="fg"></div>
+                    </div>
+                </div>
+                <label for="videoPlayer_spdChkBox" class="speedMenuBtn">1.0x</label>
+                <input id="videoPlayer_spdChkBox" type="checkbox" />
+                <div class="speedMenuOptions"></div> <!-- 배속 선택 버튼 -->
+                <i class="xi-focus-frame fullScreenBtn"></i> <!-- 전체화면 버튼 -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div>
+    <h3>자바스크립트 영상 재생기 v1.0</h3>
+    <h4>[주요 기능]</h4>
+<p><pre>1. 다양한 기능 지원: 재생/정지/되감기/빨리감기/특정위치로 이동/배속변경/풀스크린 등
+   ※ 재생 시점을 숫자 및 게이지로 표시하며, 게이지 클릭 시 클릭한 해당 시점으로 이동 재생
+2. 크로스브라우징 테스트 완료 : IE(11~) / Firefox / Chrome / Edge / Whale / Opera 등 주요 브라우저 모두 지원
+   ※ 모바일 T/O 필요
+3. 모바일 환경에서 터치/더블탭을 통한 조작 지원
+   ※ 모바일 T/O 필요
+4. 키보드를 통한 컨트롤러 조작 지원
+5. 기능 작동 시 피드백 애니메이션 구현 (해당 기능 버튼이 화면에 표시되는 등)
+6. 객체가 패키지 형태로 모듈화되어 다양한 환경에 손쉽게 적용 가능</pre></p>
+
+<h4>[미결과제]</h4>
+<p><pre>. 자바스크립트로 HTML 생성하기
+. 특정 src의 영상 로드
+. 재생버튼 구현
+. 루프 버튼 구현
+. 볼륨 조절
+. 버튼 마우스오버 및 타임아웃으로 떴다가 사라지는 효과 적용
+. 재생 완료 시 다시보기 버튼으로 바꾸기
+. playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
+. iOS, MacOS에서 무한로딩 현상 발생 해결
+. 미디어쿼리 똑바로 적용
+. 브라우저별 지원 코덱 정리
+(추가) 자바 연동 스트리밍 전송</pre></p>
+
+</div>
+
+
+</html>
