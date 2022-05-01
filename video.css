@@ -96,7 +96,7 @@ div#vidContainer .volumeBox .fg:after { /* 게이지 캐리어 하위 div 전체
     transition-property:height; transition-timing-function: ease-out; transition-duration: 0.08s;
 }
 div#vidContainer .guageBox > div > div,
-div#vidContainer .volumeBox > div > div { /* bg, fg 게이지 */
+div#vidContainer .volumeBox > div > div { /* 게이지계열(게이지/볼륨) 내부의 모든 div */
     position:absolute;
     width:auto; height:8px;
     left:0; top:50%; transform:translateY(-50%);
@@ -109,6 +109,9 @@ div#vidContainer .volumeBox > div > div.bg { /* bg 게이지 */
 div#vidContainer .guageBox > div > div.fg,
 div#vidContainer .volumeBox > div > div.fg { /* fg 게이지 */
     z-index:1; background:rgba(255, 255, 255, 0.75); width:0;
+}
+div#vidContainer .guageBox > div > div.loaded { /* 현재위치 게이지 */
+    z-index:-1; background:rgba(100, 180, 100, 0.7);
 }
 /* 재생 위치 게이지 전 영역에 마우스오버 시 (레벨 별 각각) */
 div#vidContainer .guageBox:hover > div > div,
@@ -210,7 +213,7 @@ input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions > span { /* 열었을 �
     min-width:40px; max-width:40px;
     color:rgba(0, 0, 0, 0.5);
     background-color: rgba(255, 255, 255, 0.4);
-    margin:0; padding:5px 0;
+    margin:2px; padding:5px 0; border-radius:5px;
     text-align:center;
 }
 input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions > span:hover { /* 배속박스 내 선택 항목들 마우스오버 시 커서 */

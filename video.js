@@ -71,6 +71,7 @@ vid.init = function(src) {
         box_speeds    : $$.q("#vidContainer .bottomBox .speedMenuOptions"),
         guage_full    : $$.q("#vidContainer .guageBox .bg"),
         guage_curr    : $$.q("#vidContainer .guageBox .fg"),
+        guage_loaded  : $$.q("#vidContainer .guageBox .loaded"),
         volume_full   : $$.q("#vidContainer .volumeBox .bg"),
         volume_curr   : $$.q("#vidContainer .volumeBox .fg"),
         icon_play     : $$.q("#vidContainer .tapBox .xi-play"),
@@ -79,12 +80,13 @@ vid.init = function(src) {
     };
 
     // 배속레이어 로드
-    for(let i = 0; i < vid.stats.speedList.length; i++) {
-        const list = vid.stats.speedList[i];
-        const one = document.createElement("span");
-        one.setAttribute("data-speed", list[i]);
-        one.innerHTML = list == 1.0 ? "일반" : list;
-        vid.el.box_speeds.append(one);
+    const list = vid.stats.speedList;
+    for(let i = 0; i < list.length; i++) {
+        const spd = list[i];
+        const span = document.createElement("span");
+        span.setAttribute("data-speed", spd);
+        span.innerHTML = spd == 1.0 ? "일반" : spd;
+        vid.el.box_speeds.append(span);
     }
     
     // 일단 비디오 로드
@@ -171,7 +173,7 @@ vid.init = function(src) {
 
     });
 
-    /* 각종 게이지 관련 */
+    // 각종 게이지 관련
     // 1. 재생 게이지
     // 재생위치가 조금이라도 변경되면, 리프레셔 실행
     vid.el.screen.addEventListener("timeupdate", vid.func.refreshHandlr);
@@ -183,6 +185,8 @@ vid.init = function(src) {
     // 게이지 내부 클릭 시 해당 재생 시점으로 이동
     vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
     vid.el.guage_full.addEventListener("click", vid.func.jumpByClk);
+    vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
+  //  vid.el.guage_selector.addEventListener("click", vid.func.jumpByClk);
     // 2. 볼륨 게이지
     // 게이지 내부 클릭 시 해당 재생 볼륨으로 이동
     vid.el.volume_curr.addEventListener("click", vid.func.volumeByClk);
@@ -347,7 +351,6 @@ vid.func = {
         vid.func.volumeTo(perc);
     },
 
-
     // 배속창 강제 닫기
     closeSpeedMenu: function() {
         vid.el.checkbox_speed.checked = false;
@@ -433,8 +436,13 @@ vid.func = {
 
     // 해당 크기의 볼륨으로 볼륨 변경해주는 함수
     volumeTo: function(perc) {
-        vid.el.screen.volume = perc;
-        vid.el.volume_curr.style.width = (perc * 100) + "%";
+        vid.el.screen.volume = perc; // 엘리먼트의 수치 변경
+        vid.el.volume_curr.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
+    },
+
+    // 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
+    loadedPosTo: function(perc) {
+        vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
     }
 
 };
