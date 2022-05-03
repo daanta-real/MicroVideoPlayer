@@ -69,9 +69,11 @@ vid.init = function(src) {
         label_speed   : $$.q("#vidContainer .bottomBox .speedMenuBtn"),
         checkbox_speed: $$.el("videoPlayer_spdChkBox"),
         box_speeds    : $$.q("#vidContainer .bottomBox .speedMenuOptions"),
+        guage_box     : $$.q("#vidContainer .guageBox"),
         guage_full    : $$.q("#vidContainer .guageBox .bg"),
         guage_curr    : $$.q("#vidContainer .guageBox .fg"),
         guage_loaded  : $$.q("#vidContainer .guageBox .loaded"),
+        guage_hover   : $$.q("#vidContainer .guageBox .hover"),
         volume_full   : $$.q("#vidContainer .volumeBox .bg"),
         volume_curr   : $$.q("#vidContainer .volumeBox .fg"),
         icon_play     : $$.q("#vidContainer .tapBox .xi-play"),
@@ -173,8 +175,8 @@ vid.init = function(src) {
 
     });
 
-    // 각종 게이지 관련
-    // 1. 재생 게이지
+    // 4. 각종 게이지 관련
+    // 1) 재생 게이지
     // 재생위치가 조금이라도 변경되면, 리프레셔 실행
     vid.el.screen.addEventListener("timeupdate", vid.func.refreshHandlr);
     // 비디오가 로딩되었을 직후에는 메타데이터를 불러오기 전이므로, 위의 리프레시가 실행되어도 길이가 NaN으로 측정됨
@@ -186,8 +188,8 @@ vid.init = function(src) {
     vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
     vid.el.guage_full.addEventListener("click", vid.func.jumpByClk);
     vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
-  //  vid.el.guage_selector.addEventListener("click", vid.func.jumpByClk);
-    // 2. 볼륨 게이지
+  //  vid.el.guage_hover.addEventListener("click", vid.func.jumpByClk);
+    // 2) 볼륨 게이지
     // 게이지 내부 클릭 시 해당 재생 볼륨으로 이동
     vid.el.volume_curr.addEventListener("click", vid.func.volumeByClk);
     vid.el.volume_full.addEventListener("click", vid.func.volumeByClk);
@@ -197,7 +199,13 @@ vid.init = function(src) {
     vid.el.icon_play.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_backward.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_forward.addEventListener("animationend", animate_pop_clr_handlr);
-    
+
+    // 5. 마우스오버 관련
+    // 1) 재생바 마우스오버 시 현재 재생위치 표시
+    vid.el.guage_box.addEventListener("mousemove", vid.func.refreshHoverPos);
+
+
+
     console.log("비디오 플레이어 초기화 완료.");
 
 };
@@ -425,8 +433,9 @@ vid.func = {
     
     // 현재 재생위치 연관 정보를 전부 갱신하는 함수
     refresh: function() {
-        const currPosRaw = Math.floor(vid.el.screen.currentTime);
-        const fullPosRaw = Math.floor(vid.el.screen.duration);
+        const currPosRaw = Math.floor(vid.el.screen.currentTime); // 초
+        const fullPosRaw = Math.floor(vid.el.screen.duration); // 초
+        console.log(currPosRaw);
         currPos = Math.floor(currPosRaw / 60) + ":" + $$.numberPad((currPosRaw - Math.floor(currPosRaw / 60) * 60), 2);
         fullPos = Math.floor(fullPosRaw / 60) + ":" + $$.numberPad((fullPosRaw - Math.floor(fullPosRaw / 60) * 60), 2);
         vid.el.span_currPos.innerText = currPos + " / " + fullPos;
@@ -443,6 +452,23 @@ vid.func = {
     // 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
     loadedPosTo: function(perc) {
         vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
+    },
+
+    // 마우스 절대위치를 받아, 그에 해당하는 재생위치를 계산하여 퍼센티지(0 ~ 1)로 회신해 주는 함수
+    getCurrHoveredPerc: function(currClientX) {
+        const rectObj = vid.el.guage_full.getBoundingClientRect(); // px
+        const width = rectObj.width;
+        const x = currClientX - rectObj.left;
+        const perc = x / width;
+        return perc;
+    },
+
+    // 마우스 위치에 맞게 hover의 너비를 변경시켜 주는 함수
+    refreshHoverPos: function(e) {
+        const perc = vid.func.getCurrHoveredPerc(e.clientX);
+        const newDuration = Math.floor(perc * vid.el.screen.duration); // 초
+        vid.el.guage_hover.style.width = perc * 100 + "%";
+        console.log("마우스오버된 재생 위치:", newDuration);
     }
 
 };
