@@ -467,7 +467,8 @@ vid.func = {
     refreshHoverPos: function(e) {
         const perc = vid.func.getCurrHoveredPerc(e.clientX);
         const newDuration = Math.floor(perc * vid.el.screen.duration); // 초
-        vid.el.guage_hover.style.width = perc * 100 + "%";
+        vid.el.guage_bg.style.background
+            = "linear-gradient(90deg, red 0 " + perc + "%, transparent 0 " + (perc + 0.00000000000000000001) + "%)";
         console.log("마우스오버된 재생 위치:", newDuration);
     }
 
