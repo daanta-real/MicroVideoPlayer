@@ -5,12 +5,61 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>바 게이지 렌더링 속도 비교</title>
+    <script type="text/javascript">
+
+
+
+// 각 시간 변수들 정의
+let time_start; // 시간 측정 시 시작시각 담당
+
+// 시간 시작기
+function timeStart() {
+    time_start = new Date();
+}
+
+// 시간 종료 및 걸린시간 측정기
+function timeEnd() {
+    console.log((new Date() - time_start) / 1000, "초 걸렸습니다.");
+}
+
+
+
+// Case 1. 배경을 한 번 바꿔주는 함수. 속도 면에서 불리할 것으로 보이지만 레이어 핸들링이 편함.
+function refreshColoredBg(e) {
+
+}
+
+// Case 2. width를 바꿔주는 함수. 속도 면에서 유리할 것으로 보이지만 레이어 핸들링이 쉽지 않음.
+function refreshWidthBg(e) {
+
+}
+
+
+
+// 리스너 등록
+function init() {
+    document.getElementById("coloredBgRunBtn").addEverntListener("click", refreshColoredBg);
+    document.getElementById("widthChangeRunBtn").addEverntListener("click", refreshColoredBg);
+}
+document.addEventListener("DOMContentLoaded", init);
+
+
+
+
+    </script>
 </head>
 <body>
     <p>바 게이지 채우기 방식 별 렌더링 속도 비교</p>
     <p>Case 1. 1-Layer(BackgroundColor)</p>
     <p>Case 2. 2-Layers(width)</p>
-    <div id=""
-    <div id="bg"></div>
+    <p>
+        <div id="coloredBg"></div>
+        <button type="button" id="coloredBgRunBtn">bgColor 변경</button>
+    </p>
+    <p>
+        <div id="widthFull"></div>
+        <div id="widthCurr"></div>
+        <button type="button" id="widthChange">width 변경</button>
+    </p>
 </body>
 </html>
