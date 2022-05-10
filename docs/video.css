@@ -138,14 +138,14 @@ div#vidContainer .volumeBox:hover .fg:after { /* 똥글뱅이 마우스오버 �
 }
 /* 재생 위치 영역에 마우스오버 시 툴팁 표시 */
 div#vidContainer .guageBox div.hover {
-    position: relative;
-    background: #b774;
+    background: #b77d;
 }
 div#vidContainer .guageBox/*:hover*/ div.hover:after {
-    content:"d"; bottom:0; transform:translateX(-50%);
-    position: absolute;
-    background:blue; color:white;
-    width:50px; height:50px;
+    content:"";
+    position: absolute; bottom:10px; right:0; transform:translateX(50%);
+    background:transparent; color:white;
+    width:70px; height:30px; font-size:15px; text-align:center;
+    border:1px solid red;
 }
 
 

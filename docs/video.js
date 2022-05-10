@@ -463,13 +463,16 @@ vid.func = {
         return perc;
     },
 
-    // 마우스 위치에 맞게 hover의 너비를 변경시켜 주는 함수
+    // 마우스 위치에 맞게 재생위치 툴팁의 x축을 변경시켜 주는 함수
     refreshHoverPos: function(e) {
         const perc = vid.func.getCurrHoveredPerc(e.clientX);
         const newDuration = Math.floor(perc * vid.el.screen.duration); // 초
-        vid.el.guage_bg.style.background
-            = "linear-gradient(90deg, red 0 " + perc + "%, transparent 0 " + (perc + 0.00000000000000000001) + "%)";
-        console.log("마우스오버된 재생 위치:", newDuration);
+        const el = vid.el.guage_hover;
+        el.style.width = perc * 100 + "%";
+        console.log("마우스오버된 재생 위치:", newDuration + "% =>", el.style.width); // % 안맞음
+        const currentTime = vid.el.screen.currentTime;
+        const afterEl = window.getComputedStyle(el, ':after');// 계산은 할 수 있지만 아직 content를 못 바꿈
+        afterEl.style.content = currentTime;
     }
 
 };
