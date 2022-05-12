@@ -430,17 +430,26 @@ vid.func = {
     controlHide: function() {
         vid.el.controlsLayer.style.animation = "fadeout 0.6s linear forwards";
     },
+
+    // 현재 재생위치 관련 정보를 회신해 주는 함수
+    getCurrVidPos: function() {
+        const info = {
+            currPosRaw: Math.floor(vid.el.screen.currentTime), // 초
+            fullPosRaw: Math.floor(vid.el.screen.duration), // 초
+            currPosTimeStr: Math.floor(currPosRaw / 60) + ":" + $$.numberPad((currPosRaw - Math.floor(currPosRaw / 60) * 60), 2),
+            fullPosTimeStr: Math.floor(fullPosRaw / 60) + ":" + $$.numberPad((fullPosRaw - Math.floor(fullPosRaw / 60) * 60), 2)
+        };
+        info.playedTimeStr = info.currPosTimeStr + " / " + info.fullPosTimeStr;
+        info.playedPercStr = info.currPosRaw / vidPosInfo.fullPosRaw * 100;
+        return info;
+    },
     
     // 현재 재생위치 연관 정보를 전부 갱신하는 함수
     refresh: function() {
-        const currPosRaw = Math.floor(vid.el.screen.currentTime); // 초
-        const fullPosRaw = Math.floor(vid.el.screen.duration); // 초
-        console.log(currPosRaw);
-        currPos = Math.floor(currPosRaw / 60) + ":" + $$.numberPad((currPosRaw - Math.floor(currPosRaw / 60) * 60), 2);
-        fullPos = Math.floor(fullPosRaw / 60) + ":" + $$.numberPad((fullPosRaw - Math.floor(fullPosRaw / 60) * 60), 2);
-        vid.el.span_currPos.innerText = currPos + " / " + fullPos;
-        const playedPerc = currPosRaw / fullPosRaw * 100;
-        vid.el.guage_curr.style.width = playedPerc + "%";
+        const info = vid.func.getCurrVidPos();
+        console.log(info);
+        vid.el.span_currPos.innerText = info.playedTimeStr;
+        vid.el.guage_curr.style.width = info.playedPercStr + "%";
     },
 
     // 해당 크기의 볼륨으로 볼륨 변경해주는 함수
