@@ -331,6 +331,11 @@ vid.func = {
         vid.func.jumpTo(vid.el.screen.currentTime + amount);
     },
 
+    // 초를 입력하면 분:초 형태로 되돌려주는 함수
+    convertToMinAndSecStr: function(sec) {
+        return Math.floor(sec / 60) + ":" + $$.numberPad((sec - Math.floor(sec / 60) * 60), 2);
+    },
+    
     // (게이지에 클릭 이벤트 발생 시) 클릭한 시점으로 점프함
     jumpByClk: function(e) {
         // 버블링 방지 3단콤보
@@ -436,8 +441,8 @@ vid.func = {
         const info = {
             currPosRaw: Math.floor(vid.el.screen.currentTime), // 초
             fullPosRaw: Math.floor(vid.el.screen.duration), // 초
-            currPosTimeStr: Math.floor(currPosRaw / 60) + ":" + $$.numberPad((currPosRaw - Math.floor(currPosRaw / 60) * 60), 2),
-            fullPosTimeStr: Math.floor(fullPosRaw / 60) + ":" + $$.numberPad((fullPosRaw - Math.floor(fullPosRaw / 60) * 60), 2)
+            currPosTimeStr: convertToMinAndSecStr(currPosRaw),
+            fullPosTimeStr: convertToMinAndSecStr(fullPosRaw)
         };
         info.playedTimeStr = info.currPosTimeStr + " / " + info.fullPosTimeStr;
         info.playedPercStr = info.currPosRaw / vidPosInfo.fullPosRaw * 100;
@@ -479,9 +484,9 @@ vid.func = {
         const el = vid.el.guage_hover;
         el.style.width = perc * 100 + "%";
         console.log("마우스오버된 재생 위치:", newDuration + "% =>", el.style.width); // % 안맞음
-        const currentTime = vid.el.screen.currentTime;
-        const afterEl = window.getComputedStyle(el, ':after');// 계산은 할 수 있지만 아직 content를 못 바꿈
-        afterEl.style.content = currentTime;
+        const hoveredTimeStr = vid.el.screen.duration * perc;
+        hoveredTimeStr = convertToMinAndSecStr(hoveredTimeStr);
+        el.setAttribute("data-content", hoveredTimeStr);
     }
 
 };
