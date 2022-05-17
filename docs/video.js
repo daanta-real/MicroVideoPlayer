@@ -438,14 +438,20 @@ vid.func = {
 
     // 현재 재생위치 관련 정보를 회신해 주는 함수
     getCurrVidPos: function() {
+        const currPosRaw = Math.floor(vid.el.screen.currentTime); // 초
+        const fullPosRaw = Math.floor(vid.el.screen.duration); // 초
+        const currPosTimeStr = vid.func.convertToMinAndSecStr(currPosRaw); // 분:초
+        const fullPosTimeStr = vid.func.convertToMinAndSecStr(fullPosRaw); // 분:초
+        const playedTimeStr = currPosTimeStr + " / " + fullPosTimeStr; // 분:초 / 분:초
+        const playedPercStr = currPosRaw / fullPosRaw * 100; // 재생위치(%)
         const info = {
-            currPosRaw: Math.floor(vid.el.screen.currentTime), // 초
-            fullPosRaw: Math.floor(vid.el.screen.duration), // 초
-            currPosTimeStr: convertToMinAndSecStr(currPosRaw),
-            fullPosTimeStr: convertToMinAndSecStr(fullPosRaw)
+            currPosRaw: currPosRaw,
+            fullPosRaw: fullPosRaw,
+            currPosTimeStr: currPosTimeStr,
+            fullPosTimeStr: fullPosTimeStr,
+            playedTimeStr: playedTimeStr,
+            playedPercStr: playedPercStr
         };
-        info.playedTimeStr = info.currPosTimeStr + " / " + info.fullPosTimeStr;
-        info.playedPercStr = info.currPosRaw / vidPosInfo.fullPosRaw * 100;
         return info;
     },
     
@@ -484,8 +490,8 @@ vid.func = {
         const el = vid.el.guage_hover;
         el.style.width = perc * 100 + "%";
         console.log("마우스오버된 재생 위치:", newDuration + "% =>", el.style.width); // % 안맞음
-        const hoveredTimeStr = vid.el.screen.duration * perc;
-        hoveredTimeStr = convertToMinAndSecStr(hoveredTimeStr);
+        let hoveredTimeStr = vid.el.screen.duration * perc;
+        hoveredTimeStr = vid.func.convertToMinAndSecStr(hoveredTimeStr);
         el.setAttribute("data-content", hoveredTimeStr);
     }
 
