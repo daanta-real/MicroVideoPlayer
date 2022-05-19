@@ -202,7 +202,9 @@ vid.init = function(src) {
 
     // 5. 마우스오버 관련
     // 1) 재생바 마우스오버 시 현재 재생위치 표시
-    vid.el.guage_box.addEventListener("mousemove", vid.func.refreshHoverPos);
+    vid.el.guage_box.addEventListener("mouseenter", vid.func.hoverShow);
+    vid.el.guage_box.addEventListener("mousemove", vid.func.hoverRefreshPos);
+    vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHide);
 
 
 
@@ -333,7 +335,7 @@ vid.func = {
 
     // 초를 입력하면 분:초 형태로 되돌려주는 함수
     convertToMinAndSecStr: function(sec) {
-        return Math.floor(sec / 60) + ":" + $$.numberPad((sec - Math.floor(sec / 60) * 60), 2);
+        return Math.floor(sec / 60) + ":" + $$.numberPad(Math.floor((sec - Math.floor(sec / 60) * 60)), 2);
     },
     
     // (게이지에 클릭 이벤트 발생 시) 클릭한 시점으로 점프함
@@ -458,7 +460,6 @@ vid.func = {
     // 현재 재생위치 연관 정보를 전부 갱신하는 함수
     refresh: function() {
         const info = vid.func.getCurrVidPos();
-        console.log(info);
         vid.el.span_currPos.innerText = info.playedTimeStr;
         vid.el.guage_curr.style.width = info.playedPercStr + "%";
     },
@@ -483,17 +484,22 @@ vid.func = {
         return perc;
     },
 
-    // 마우스 위치에 맞게 재생위치 툴팁의 x축을 변경시켜 주는 함수
-    refreshHoverPos: function(e) {
+    // 마우스가 재생위치 바에 진입하면 툴팁을 표시시켜 주는 함수
+    hoverShow: function() {
+        vid.el.guage_hover.style.display = "block";
+    },
+
+    // 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수
+    hoverHide: function() {
+        vid.el.guage_hover.style.display = "none";
+    },
+
+    // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
+    hoverRefreshPos: function(e) {
         const perc = vid.func.getCurrHoveredPerc(e.clientX);
-        console.log(perc);
-        const newDuration = Math.floor(perc * vid.el.screen.duration); // 초
-        console.log(newDuration);
         const el = vid.el.guage_hover;
         el.style.width = perc * 100 + "%";
-        console.log("마우스오버된 재생 위치:", newDuration + "% =>", el.style.width); // % 안맞음
-        let hoveredTimeStr = vid.el.screen.duration * perc;
-        hoveredTimeStr = vid.func.convertToMinAndSecStr(hoveredTimeStr);
+        let hoveredTimeStr = vid.func.convertToMinAndSecStr(vid.el.screen.duration * perc);
         el.setAttribute("data-content", hoveredTimeStr);
     }
 

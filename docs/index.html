@@ -15,8 +15,8 @@
 6. 객체가 패키지 형태로 모듈화되어 다양한 환경에 손쉽게 적용 가능
 
 [미결과제]
+. 재생바 마우스오버 시 좌우 오버플로우 문제 발생
 . 비디오 초기화 시 완료됐는지 확실하게 테스트할 방법이 필요함
-. 재생바 마우스오버 시 위치 알려주는 기능 적용
 . 버튼 마우스오버 및 타임아웃으로 떴다가 사라지는 효과 적용
 . 재생 완료 시 다시보기 버튼으로 바꾸기
 . playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
@@ -53,7 +53,7 @@
 
 window.onload = function() {
     //vid.init("https://blog.kakaocdn.net/dn/cedQu5/btrCp7bmaNP/kLWNTsX1ngGvqtIVTOg9j1/asdf.mp4?attach=1&knm=tfile.mp4");
-    vid.init("asdf.avi");
+    vid.init("asdf_원본.mp4");
     //rainbow("body *");
 }
 
@@ -84,10 +84,10 @@ window.onload = function() {
         </div>
         <div class="guageBox">
             <div>
+                <div class="hover"></div>
                 <div class="bg"></div>
                 <div class="fg"></div>
                 <div class="loaded"></div>
-                <div class="hover"></div>
             </div>
         </div>
         <div class="bottomBox"> <!-- 재생/정지/배속/풀스크린 등 버튼 있는 영역 -->
