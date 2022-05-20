@@ -13,7 +13,8 @@ div#vidContainer {
     touch-action: manipulation; /* 모바일 환경에서 더블탭 시 확대 방지 */
 }
 @media (min-width:768px) { /* PC */
-    div#vidContainer { width:40rem; height:25rem; }
+   /* div#vidContainer { width:40rem; height:25rem; }*/
+   div#vidContainer { width:80rem; height:50rem; }
 }
 /* 미디어쿼리 필요 시 아래 주석대로 셋팅해주면 된다. PC/모바일(세로)/모바일(가로) 순이다.
 ※ 화면 크기 분할의 기준은 아이패드 미니 (768px)

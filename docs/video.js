@@ -480,8 +480,10 @@ vid.func = {
         const rectObj = vid.el.guage_full.getBoundingClientRect(); // px
         const width = rectObj.width;
         const x = currClientX - rectObj.left;
-        const perc = x / width;
-        return perc;
+        let perc = x / width;
+        return perc > 1 ? 1
+             : perc < 0 ? 0
+             : perc;
     },
 
     // 마우스가 재생위치 바에 진입하면 툴팁을 표시시켜 주는 함수
