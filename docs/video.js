@@ -50,6 +50,10 @@ vid.stats = {
 
 // 비디오 컨트롤용 객체 초기화 함수
 vid.init = function(src) {
+   this.el.screen.src = src; // 일단 비디오 로드
+   this.initRun(); // 비디오 재생 가능해야 다음 단계로 진행
+}
+vid.initRun = function() {
     
     // 각종 엘리먼트 할당
     this.el = {
@@ -90,9 +94,6 @@ vid.init = function(src) {
         span.innerHTML = spd == 1.0 ? "일반" : spd;
         vid.el.box_speeds.append(span);
     }
-    
-    // 일단 비디오 로드
-    this.el.screen.src = src;
     
     // 1. 일반 리스너 (키 리스너와 클릭 리스너가 완전히 동일) 바인딩
     this.handlrList = [ // 각 키별 실행할 이벤트 정보 - [클릭한 엘리먼트 객체, 키보드 단축키, 실행할 함수] 순
