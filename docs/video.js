@@ -493,8 +493,14 @@ vid.func = {
     },
 
     // 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수
+    hoverHideHandlr: function() {
+        if(vid.stats.tooltipHideTimer) return; // 1초 스로틀링
+        vid.stats.tooltipHideTimer = setTimeout(vid.func.hoverHide, 1000); // 1초 지나면 실행
+    },
+
     hoverHide: function() {
         vid.el.guage_hover.style.display = "none";
+        vid.stats.tooltipHideTimer = null;
     },
 
     // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
