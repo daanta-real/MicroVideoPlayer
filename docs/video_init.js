@@ -1,37 +1,50 @@
-// 비디오 컨트롤용 객체 초기화 함수
-vid.init = function(src) {
-    this.el = { screen: $$.q("#vidContainer .screenLayer") };
-    this.el.screen.src = src; // 일단 비디오 로드
-    this.initRun(); // 비디오 재생 가능해야 다음 단계로 진행
-}
-vid.initRun = function() {
+
+// init 계열 함수 준비
+vid.initialize = null;
+vid.init = {};
+
+// 1. 비디오 컨트롤용 객체 초기화 함수
+vid.initialize = function(src) {
+    vid.el = { screen: $$.q("#vidContainer .screenLayer") };
+    vid.el.screen.src = src; // 일단 비디오 로드
+    vid.el.screen.addEventListener('canplay', vid.init.trigger); // 비디오 재생 가능해야 다음 단계로 진행
+};
+
+// 2. 초기화 실행 감지 시 실행 (초기화 실행 함수로 이행)
+vid.init.trigger = function() {
+    vid.el.screen.removeEventListener('canplay', vid.init.trigger);
+    vid.init.run();
+};
+
+// 3. 초기화 실행 함수
+vid.init.run = function() {
 
     // 각종 엘리먼트 할당
-    this.el.container      = $$.el("vidContainer");
-    this.el.tapLayer       = $$.q("#vidContainer .tapBox");
-    this.el.tap_backward   = $$.q("#vidContainer .tapBox > div:first-child");
-    this.el.tap_forward    = $$.q("#vidContainer .tapBox > div:last-child");
-    this.el.controlsLayer  = $$.q("#vidContainer .controlsLayer");
-    this.el.btn_play       = $$.q("#vidContainer .bottomBox .xi-play");
-    this.el.this.el.btn_backward = $$.q("#vidContainer .bottomBox .xi-backward");
-    this.el.btn_forward    = $$.q("#vidContainer .bottomBox .xi-forward");
-    this.el.btn_loop_input = $$.el("videoPlayer_repeatChkBox");
-    this.el.btn_loop_label = $$.q("#vidContainer .midBlock .repeatLabel");
-    this.el.this.el.btn_fullScreen = $$.q("#vidContainer .bottomBox .fullScreenBtn");
-    this.el.span_currPos   = $$.q("#vidContainer .bottomBox .posInfo");
-    this.el.label_speed    = $$.q("#vidContainer .bottomBox .speedMenuBtn");
-    this.el.checkbox_speed = $$.el("videoPlayer_spdChkBox");
-    this.el.box_speeds     = $$.q("#vidContainer .bottomBox .speedMenuOptions");
-    this.el.guage_box      = $$.q("#vidContainer .guageBox");
-    this.el.guage_full     = $$.q("#vidContainer .guageBox .bg");
-    this.el.this.el.guage_curr =  $$.q("#vidContainer .guageBox .fg");
-    this.el.guage_loaded   = $$.q("#vidContainer .guageBox .loaded");
-    this.el.guage_hover    = $$.q("#vidContainer .guageBox .hover");
-    this.el.volume_full    = $$.q("#vidContainer .volumeBox .bg");
-    this.el.this.el.volume_curr   = $$.q("#vidContainer .volumeBox .fg");
-    this.el.this.el.icon_play     = $$.q("#vidContainer .tapBox .xi-play");
-    this.el.this.el.icon_backward = $$.q("#vidContainer .tapBox .xi-backward");
-    this.el.icon_forward   = $$.q("#vidContainer .tapBox .xi-forward");
+    vid.el.container      = $$.el("vidContainer");
+    vid.el.tapLayer       = $$.q("#vidContainer .tapBox");
+    vid.el.tap_backward   = $$.q("#vidContainer .tapBox > div:first-child");
+    vid.el.tap_forward    = $$.q("#vidContainer .tapBox > div:last-child");
+    vid.el.controlsLayer  = $$.q("#vidContainer .controlsLayer");
+    vid.el.btn_play       = $$.q("#vidContainer .bottomBox .xi-play");
+    vid.el.btn_backward = $$.q("#vidContainer .bottomBox .xi-backward");
+    vid.el.btn_forward    = $$.q("#vidContainer .bottomBox .xi-forward");
+    vid.el.btn_loop_input = $$.el("videoPlayer_repeatChkBox");
+    vid.el.btn_loop_label = $$.q("#vidContainer .midBlock .repeatLabel");
+    vid.el.btn_fullScreen = $$.q("#vidContainer .bottomBox .fullScreenBtn");
+    vid.el.span_currPos   = $$.q("#vidContainer .bottomBox .posInfo");
+    vid.el.label_speed    = $$.q("#vidContainer .bottomBox .speedMenuBtn");
+    vid.el.checkbox_speed = $$.el("videoPlayer_spdChkBox");
+    vid.el.box_speeds     = $$.q("#vidContainer .bottomBox .speedMenuOptions");
+    vid.el.guage_box      = $$.q("#vidContainer .guageBox");
+    vid.el.guage_full     = $$.q("#vidContainer .guageBox .bg");
+    vid.el.guage_curr =  $$.q("#vidContainer .guageBox .fg");
+    vid.el.guage_loaded   = $$.q("#vidContainer .guageBox .loaded");
+    vid.el.guage_hover    = $$.q("#vidContainer .guageBox .hover");
+    vid.el.volume_full    = $$.q("#vidContainer .volumeBox .bg");
+    vid.el.volume_curr   = $$.q("#vidContainer .volumeBox .fg");
+    vid.el.icon_play     = $$.q("#vidContainer .tapBox .xi-play");
+    vid.el.icon_backward = $$.q("#vidContainer .tapBox .xi-backward");
+    vid.el.icon_forward   = $$.q("#vidContainer .tapBox .xi-forward");
 
     // 배속레이어 로드
     const list = vid.stats.speedList;
@@ -44,15 +57,15 @@ vid.initRun = function() {
     }
     
     // 1. 일반 리스너 (키 리스너와 클릭 리스너가 완전히 동일) 바인딩
-    this.handlrList = [ // 각 키별 실행할 이벤트 정보 - [클릭한 엘리먼트 객체, 키보드 단축키, 실행할 함수] 순
-        [this.el.btn_play       , 32 , this.func.togglePlay      ], // Space(32)
-        [this.el.btn_backward   , 37 , this.func.backward        ], // ArrowLeft(37)
-        [this.el.btn_forward    , 39 , this.func.forward         ], // ArrowRight(39)
-        [this.el.btn_fullScreen , 70 , this.func.toggleFullscreen], // Fkey(70)
-        [null                   , 27 , this.func.escKeyHandlr    ], // Escape(27)
-        [null                   , 219, this.func.speedDown       ], // BracketLeft(219)
-        [null                   , 221, this.func.speedUp         ], // BracketRight(221)
-        [this.el.btn_loop_label , 76 , this.func.refreshLoopMode ]  // KeyL(76)
+    vid.handlrList = [ // 각 키별 실행할 이벤트 정보 - [클릭한 엘리먼트 객체, 키보드 단축키, 실행할 함수] 순
+        [vid.el.btn_play       , 32 , vid.func.togglePlay      ], // Space(32)
+        [vid.el.btn_backward   , 37 , vid.func.backward        ], // ArrowLeft(37)
+        [vid.el.btn_forward    , 39 , vid.func.forward         ], // ArrowRight(39)
+        [vid.el.btn_fullScreen , 70 , vid.func.toggleFullscreen], // Fkey(70)
+        [null                  , 27 , vid.func.escKeyHandlr    ], // Escape(27)
+        [null                  , 219, vid.func.speedDown       ], // BracketLeft(219)
+        [null                  , 221, vid.func.speedUp         ], // BracketRight(221)
+        [vid.el.btn_loop_label , 76 , vid.func.refreshLoopMode ]  // KeyL(76)
     ];
     // 일반 클릭 리스너 할당 실시
     for(let i = 0; i < vid.handlrList.length; i++) {
@@ -63,7 +76,7 @@ vid.initRun = function() {
         info[0].addEventListener(eventType, info[2]); // 클릭 이벤트 리스너 등록
     }
     // 일반 키 입력 리스너 할당 실시
-    window.addEventListener("keydown", this.func.keyHandlr);
+    window.addEventListener("keydown", vid.func.keyHandlr);
     
     // 2. 배속 변경 버튼 클릭 관련
     // 비디오 재생 시 사전 배속값을 속도에 강제 반영
