@@ -26,7 +26,7 @@ vid.init.run = function() {
     vid.el.tap_forward    = $$.q("#vidContainer .tapBox > div:last-child");
     vid.el.controlsLayer  = $$.q("#vidContainer .controlsLayer");
     vid.el.btn_play       = $$.q("#vidContainer .bottomBox .xi-play");
-    vid.el.btn_backward = $$.q("#vidContainer .bottomBox .xi-backward");
+    vid.el.btn_backward   = $$.q("#vidContainer .bottomBox .xi-backward");
     vid.el.btn_forward    = $$.q("#vidContainer .bottomBox .xi-forward");
     vid.el.btn_loop_input = $$.el("videoPlayer_repeatChkBox");
     vid.el.btn_loop_label = $$.q("#vidContainer .midBlock .repeatLabel");
@@ -37,13 +37,13 @@ vid.init.run = function() {
     vid.el.box_speeds     = $$.q("#vidContainer .bottomBox .speedMenuOptions");
     vid.el.guage_box      = $$.q("#vidContainer .guageBox");
     vid.el.guage_full     = $$.q("#vidContainer .guageBox .bg");
-    vid.el.guage_curr =  $$.q("#vidContainer .guageBox .fg");
+    vid.el.guage_curr     =  $$.q("#vidContainer .guageBox .fg");
     vid.el.guage_loaded   = $$.q("#vidContainer .guageBox .loaded");
     vid.el.guage_hover    = $$.q("#vidContainer .guageBox .hover");
     vid.el.volume_full    = $$.q("#vidContainer .volumeBox .bg");
-    vid.el.volume_curr   = $$.q("#vidContainer .volumeBox .fg");
-    vid.el.icon_play     = $$.q("#vidContainer .tapBox .xi-play");
-    vid.el.icon_backward = $$.q("#vidContainer .tapBox .xi-backward");
+    vid.el.volume_curr    = $$.q("#vidContainer .volumeBox .fg");
+    vid.el.icon_play      = $$.q("#vidContainer .tapBox .xi-play");
+    vid.el.icon_backward  = $$.q("#vidContainer .tapBox .xi-backward");
     vid.el.icon_forward   = $$.q("#vidContainer .tapBox .xi-forward");
 
     // 배속레이어 로드

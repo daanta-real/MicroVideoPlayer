@@ -205,14 +205,12 @@ vid.func.refreshSpeed = function() {
 // 재생위치 갱신 주기를 스로틀링으로 통제함. (0.2초)
 vid.func.refreshHandlr = function() {
     // 리프레시 1회 후 0.2초 안에 호출 시 예약타이머 초기화.
-    if(vid.stats.refreshThrottler) {
-        clearTimeout(vid.stats.refreshThrottler);
-        vid.stats.refreshThrottler = setTimeout(function() {
-            vid.stats.refreshThrottler = null;
-        }, 200);
-        vid.func.refresh();
-        return;
-    }
+    if(vid.stats.refreshThrottler) return;
+    vid.func.refresh();
+    clearTimeout(vid.stats.refreshThrottler);
+    vid.stats.refreshThrottler = setTimeout(function() {
+        vid.stats.refreshThrottler = null;
+    }, 200);
 };
 
 // 컨트롤러를 숨기는 디바운싱을 새로 설정하는 함수. (2초)
@@ -281,12 +279,13 @@ vid.func.hoverShow = function() {
     vid.el.guage_hover.style.display = "block";
 };
 
-// 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수
+// 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수 (스로틀링)
 vid.func.hoverHideHandlr = function() {
     if(vid.stats.tooltipHideTimer) return; // 1초 스로틀링
     vid.stats.tooltipHideTimer = setTimeout(vid.func.hoverHide, 1000); // 1초 지나면 실행
 };
 
+// 툴팁을 숨기는 함수
 vid.func.hoverHide = function() {
     vid.el.guage_hover.style.display = "none";
     vid.stats.tooltipHideTimer = null;
