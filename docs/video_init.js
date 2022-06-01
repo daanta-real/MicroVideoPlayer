@@ -37,7 +37,7 @@ vid.init.run = function() {
     vid.el.box_speeds     = $$.q("#vidContainer .bottomBox .speedMenuOptions");
     vid.el.guage_box      = $$.q("#vidContainer .guageBox");
     vid.el.guage_full     = $$.q("#vidContainer .guageBox .bg");
-    vid.el.guage_curr     =  $$.q("#vidContainer .guageBox .fg");
+    vid.el.guage_curr     = $$.q("#vidContainer .guageBox .fg");
     vid.el.guage_loaded   = $$.q("#vidContainer .guageBox .loaded");
     vid.el.guage_hover    = $$.q("#vidContainer .guageBox .hover");
     vid.el.volume_full    = $$.q("#vidContainer .volumeBox .bg");
@@ -151,6 +151,7 @@ vid.init.run = function() {
     vid.el.guage_full.addEventListener("click", vid.func.jumpByClk);
     vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
 //  vid.el.guage_hover.addEventListener("click", vid.func.jumpByClk);
+
     // 2) 볼륨 게이지
     // 게이지 내부 클릭 시 해당 재생 볼륨으로 이동
     vid.el.volume_curr.addEventListener("click", vid.func.volumeByClk);

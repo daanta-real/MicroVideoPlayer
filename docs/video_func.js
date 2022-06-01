@@ -120,11 +120,6 @@ vid.func.forward = function() {
     vid.func.jumpTo(vid.el.screen.currentTime + amount);
 };
 
-// 초를 입력하면 분:초 형태로 되돌려주는 함수
-vid.func.convertToMinAndSecStr = function(sec) {
-    return Math.floor(sec / 60) + ":" + $$.numberPad(Math.floor((sec - Math.floor(sec / 60) * 60)), 2);
-};
-
 // (게이지에 클릭 이벤트 발생 시) 클릭한 시점으로 점프함
 vid.func.jumpByClk = function(e) {
     // 버블링 방지 3단콤보
@@ -228,28 +223,9 @@ vid.func.controlHide = function() {
     vid.el.controlsLayer.style.animation = "fadeout 0.6s linear forwards";
 };
 
-// 현재 재생위치 관련 정보를 회신해 주는 함수
-vid.func.getCurrVidPos = function() {
-    const currPosRaw = Math.floor(vid.el.screen.currentTime); // 초
-    const fullPosRaw = Math.floor(vid.el.screen.duration); // 초
-    const currPosTimeStr = vid.func.convertToMinAndSecStr(currPosRaw); // 분:초
-    const fullPosTimeStr = vid.func.convertToMinAndSecStr(fullPosRaw); // 분:초
-    const playedTimeStr = currPosTimeStr + " / " + fullPosTimeStr; // 분:초 / 분:초
-    const playedPercStr = currPosRaw / fullPosRaw * 100; // 재생위치(%)
-    const info = {
-        currPosRaw: currPosRaw,
-        fullPosRaw: fullPosRaw,
-        currPosTimeStr: currPosTimeStr,
-        fullPosTimeStr: fullPosTimeStr,
-        playedTimeStr: playedTimeStr,
-        playedPercStr: playedPercStr
-    };
-    return info;
-};
-
 // 현재 재생위치 연관 정보를 전부 갱신하는 함수
 vid.func.refresh = function() {
-    const info = vid.func.getCurrVidPos();
+    const info = vid.calc.getCurrVidPos();
     vid.el.span_currPos.innerText = info.playedTimeStr;
     vid.el.guage_curr.style.width = info.playedPercStr + "%";
 };
@@ -284,19 +260,21 @@ vid.func.hoverShow = function() {
 // 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수
 vid.func.hoverHideHandlr = function() {
     if(vid.stats.tooltipHideTimer) return; // 1초 스로틀링
-    vid.stats.tooltipHideTimer = setTimeout(vid.func.hoverHide, 1000); // 1초 지나면 실행
+    console.log("hoverhide 등록하기");
+    vid.stats.tooltipHideTimer = setTimeout(vid.func.hoverHide, 500); // 0.5초 지나면 실행
 };
-
 vid.func.hoverHide = function() {
+    console.log("hoverhide 실행");
     vid.el.guage_hover.style.display = "none";
     vid.stats.tooltipHideTimer = null;
+    console.log("hoverhide 타이머 제거");
 };
 
 // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
 vid.func.hoverRefreshPos = function(e) {
-    const perc = vid.func.getCurrHoveredPerc(e.clientX);
+    const perc = vid.calc.getCurrHoveredPerc(e.clientX);
     const el = vid.el.guage_hover;
     el.style.width = perc * 100 + "%";
-    let hoveredTimeStr = vid.func.convertToMinAndSecStr(vid.el.screen.duration * perc);
+    let hoveredTimeStr = vid.calc.convertToMinAndSecStr(vid.el.screen.duration * perc);
     el.setAttribute("data-content", hoveredTimeStr);
 }
