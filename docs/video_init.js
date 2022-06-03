@@ -167,7 +167,7 @@ vid.init.run = function() {
     // 1) 재생바 마우스오버 시 현재 재생위치 표시
     vid.el.guage_box.addEventListener("mouseenter", vid.func.hoverShow);
     vid.el.guage_box.addEventListener("mousemove", vid.func.hoverRefreshPos);
-    vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHide);
+    vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHideHandlr);
 
 
 

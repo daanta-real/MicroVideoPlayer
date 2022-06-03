@@ -141,12 +141,21 @@ div#vidContainer .volumeBox:hover .fg:after { /* 똥글뱅이 마우스오버 �
 div#vidContainer .guageBox div.hover {
     background: #b77d;
 }
-div#vidContainer .guageBox/*:hover*/ div.hover:after {
+div#vidContainer .guageBox div.hover:after { /* 마우스 위치에 해당하는 재생위치 알려주는 툴팁 영역 - 기본 설정 */
+    /* hover가 해제되는 방향으로는 (mouseout 시) 딜레이를 준다.
+    이때, after 엘리먼트를 숨기기 위해 display 속성을 주면 안 된다.
+    display none은 on되면 렌더링 트리에서 생략되므로 트랜지션이 먹히지 않기 때문이다. */
+    transition:opacity .5s, visibility .5s 0s; /* visibility → 선딜레이 0.5s, 효과소요시간 0이라는 의미 */
     content:attr(data-content);
     position: absolute; z-index:-1; bottom:10px; right:0;
     width:70px; height:30px; transform:translateX(50%);
     color:#fffb; background:transparent;
     font-weight:bold; font-size:15px; text-align:center;
+    visibility:hidden; opacity:0;
+}
+div#vidContainer .guageBox:hover div.hover:after { /* 마우스 위치에 해당하는 재생위치 알려주는 툴팁 영역 마우스오버 동안의 설정 */
+    transition:none; /* hover가 먹여질 땐(mouseenter 시) 딜레이가 없다. */
+    visibility:visible; opacity:1;
 }
 
 

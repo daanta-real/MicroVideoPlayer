@@ -199,15 +199,12 @@ vid.func.refreshSpeed = function() {
 
 // 재생위치 갱신 주기를 스로틀링으로 통제함. (0.2초)
 vid.func.refreshHandlr = function() {
-    // 리프레시 1회 후 0.2초 안에 호출 시 예약타이머 초기화.
-    if(vid.stats.refreshThrottler) {
-        clearTimeout(vid.stats.refreshThrottler);
-        vid.stats.refreshThrottler = setTimeout(function() {
-            vid.stats.refreshThrottler = null;
-        }, 200);
-        vid.func.refresh();
-        return;
-    }
+    if(vid.stats.refreshThrottler) return; // 0.2초 안에 다시 부르면 리턴
+    vid.stats.refreshThrottler = setTimeout(function() { // 0.2초 되면
+        clearTimeout(vid.stats.refreshThrottler); // timeout 없애준 뒤
+        vid.stats.refreshThrottler = null; // null로 만듦
+        vid.func.refresh(); // 리프레시 실행
+    }, 200);
 };
 
 // 컨트롤러를 숨기는 디바운싱을 새로 설정하는 함수. (2초)
@@ -254,20 +251,19 @@ vid.func.getCurrHoveredPerc = function(currClientX) {
 
 // 마우스가 재생위치 바에 진입하면 툴팁을 표시시켜 주는 함수
 vid.func.hoverShow = function() {
-    vid.el.guage_hover.style.display = "block";
+    //vid.el.guage_hover.classList.add("hover");
+    //vid.el.guage_hover.style.display = "block";
 };
 
-// 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수
+// 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수 (쓰로틀링)
 vid.func.hoverHideHandlr = function() {
-    if(vid.stats.tooltipHideTimer) return; // 1초 스로틀링
+    if(vid.stats.tooltipHideTimer) return; // 0.5초 안에 재실행되면 return
+    // 마지막 실행 0.5초 지난 후에만 아래 실행
     console.log("hoverhide 등록하기");
-    vid.stats.tooltipHideTimer = setTimeout(vid.func.hoverHide, 500); // 0.5초 지나면 실행
-};
-vid.func.hoverHide = function() {
-    console.log("hoverhide 실행");
-    vid.el.guage_hover.style.display = "none";
-    vid.stats.tooltipHideTimer = null;
-    console.log("hoverhide 타이머 제거");
+    vid.stats.tooltipHideTimer = setTimeout(function() {
+        clearTimeout(vid.stats.tooltipHideTimer);
+        vid.stats.tooltipHideTimer = null;
+    }, 500);
 };
 
 // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
