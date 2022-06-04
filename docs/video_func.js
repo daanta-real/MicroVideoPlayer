@@ -2,6 +2,11 @@
 // 비디오 컨트롤 함수 모음
 vid.func = {};
 
+
+// ★★★★★★★★★★★★★★★ 키보드 부분 ★★★★★★★★★★★★★★★
+
+
+
 // 키보드 입력에 따라 이벤트 실행
 // IE에서는 e.code를 지원하지 않으므로, 이벤트에 들어간 키보드 키를 크로스브라우징 이슈 없이 검출하려면 e.keyCode의 숫자로 해야 한다.
 vid.func.keyHandlr = function(e) {
@@ -32,6 +37,12 @@ vid.func.escKeyHandlr = function() {
     vid.el.container.classList.remove("fullScreen");
     vid.func.closeSpeedMenu();
 };
+
+
+
+// ★★★★★★★★★★★★★★★ 재생 컨트롤 부분 ★★★★★★★★★★★★★★★
+
+
 
 // 재생 토글
 vid.func.togglePlay = function() {
@@ -73,6 +84,12 @@ vid.func.togglePlay = function() {
 
 };
 
+
+
+// ★★★★★★★★★★★★★★★ 반복기능 부분 ★★★★★★★★★★★★★★★
+
+
+
 // 반복기능 갱신. 실상 토글기능이지만, input태그 체크상태 보고 그대로 반영하는 식으로 토글하므로 갱신이란 표현을 썼음
 vid.func.refreshLoopMode = function() {
     vid.stats.loop = vid.stats.loop == true ? false : true; // 환경변수 바꿈
@@ -89,11 +106,23 @@ vid.func.refreshLoopMode = function() {
     }, 0);
 };
 
+
+
+// ★★★★★★★★★★★★★★★ 풀스크린 부분 ★★★★★★★★★★★★★★★
+
+
+
 // 풀스크린 토글
 vid.func.toggleFullscreen = function() {
     $$.classToggle(vid.el.container, "fullScreen");
     console.log("풀스크린 토글");
 };
+
+
+
+// ★★★★★★★★★★★★★★★ 재생위치 제어 부분 ★★★★★★★★★★★★★★★
+
+
 
 // 특정 시점으로 이동
 vid.func.jumpTo = function(timeTo) {
@@ -134,6 +163,21 @@ vid.func.jumpByClk = function(e) {
     vid.func.jumpTo(newTime);
 };
 
+// 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
+vid.func.hoverRefreshPos = function(e) {
+    const perc = vid.calc.getCurrHoveredPerc(e.clientX);
+    const el = vid.el.guage_hover;
+    el.style.width = perc * 100 + "%";
+    let hoveredTimeStr = vid.calc.convertToMinAndSecStr(vid.el.screen.duration * perc);
+    el.setAttribute("data-content", hoveredTimeStr);
+}
+
+
+
+// ★★★★★★★★★★★★★★★ 볼륨 부분 ★★★★★★★★★★★★★★★
+
+
+
 // (게이지에 클릭 이벤트 발생 시) 클릭한 크기의 음량으로 음량 변경
 vid.func.volumeByClk = function(e) {
     // 버블링 방지 3단콤보
@@ -147,6 +191,18 @@ vid.func.volumeByClk = function(e) {
     // 계산된 해당 크기의 볼륨으로 볼륨 변경
     vid.func.volumeTo(perc);
 };
+
+// 해당 크기의 볼륨으로 볼륨 변경해주는 함수
+vid.func.volumeTo = function(perc) {
+    vid.el.screen.volume = perc; // 엘리먼트의 수치 변경
+    vid.el.volume_curr.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
+};
+
+
+
+// ★★★★★★★★★★★★★★★ 배속 기능 부분 ★★★★★★★★★★★★★★★
+
+
 
 // 배속창 강제 닫기
 vid.func.closeSpeedMenu = function() {
@@ -197,6 +253,12 @@ vid.func.refreshSpeed = function() {
     vid.func.closeSpeedMenu();
 };
 
+
+
+// ★★★★★★★★★★★★★★★ 재생위치 반영 부분 ★★★★★★★★★★★★★★★
+
+
+
 // 재생위치 갱신 주기를 스로틀링으로 통제함. (0.2초)
 vid.func.refreshHandlr = function() {
     if(vid.stats.refreshThrottler) return; // 0.2초 안에 다시 부르면 리턴
@@ -206,6 +268,24 @@ vid.func.refreshHandlr = function() {
         vid.func.refresh(); // 리프레시 실행
     }, 200);
 };
+
+// 현재 재생위치 연관 정보를 전부 갱신하는 함수
+vid.func.refresh = function() {
+    const info = vid.calc.getCurrVidPos();
+    vid.el.span_currPos.innerText = info.playedTimeStr;
+    vid.el.guage_curr.style.width = info.playedPercStr + "%";
+};
+
+// 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
+vid.func.loadedPosTo = function(perc) {
+    vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
+};
+
+
+
+// ★★★★★★★★★★★★★★★ 컨트롤러 숨김처리 부분 ★★★★★★★★★★★★★★★
+
+
 
 // 컨트롤러를 숨기는 디바운싱을 새로 설정하는 함수. (2초)
 vid.func.controlHideDebouncerSet = function() {
@@ -220,41 +300,6 @@ vid.func.controlHide = function() {
     vid.el.controlsLayer.style.animation = "fadeout 0.6s linear forwards";
 };
 
-// 현재 재생위치 연관 정보를 전부 갱신하는 함수
-vid.func.refresh = function() {
-    const info = vid.calc.getCurrVidPos();
-    vid.el.span_currPos.innerText = info.playedTimeStr;
-    vid.el.guage_curr.style.width = info.playedPercStr + "%";
-};
-
-// 해당 크기의 볼륨으로 볼륨 변경해주는 함수
-vid.func.volumeTo = function(perc) {
-    vid.el.screen.volume = perc; // 엘리먼트의 수치 변경
-    vid.el.volume_curr.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
-};
-
-// 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
-vid.func.loadedPosTo = function(perc) {
-    vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
-};
-
-// 마우스 절대위치를 받아, 그에 해당하는 재생위치를 계산하여 퍼센티지(0 ~ 1)로 회신해 주는 함수
-vid.func.getCurrHoveredPerc = function(currClientX) {
-    const rectObj = vid.el.guage_full.getBoundingClientRect(); // px
-    const width = rectObj.width;
-    const x = currClientX - rectObj.left;
-    let perc = x / width;
-    return perc > 1 ? 1
-            : perc < 0 ? 0
-            : perc;
-};
-
-// 마우스가 재생위치 바에 진입하면 툴팁을 표시시켜 주는 함수
-vid.func.hoverShow = function() {
-    //vid.el.guage_hover.classList.add("hover");
-    //vid.el.guage_hover.style.display = "block";
-};
-
 // 마우스가 재생위치 바로부터 벗어나면 툴팁을 숨겨주는 함수 (쓰로틀링)
 vid.func.hoverHideHandlr = function() {
     if(vid.stats.tooltipHideTimer) return; // 0.5초 안에 재실행되면 return
@@ -265,12 +310,3 @@ vid.func.hoverHideHandlr = function() {
         vid.stats.tooltipHideTimer = null;
     }, 500);
 };
-
-// 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
-vid.func.hoverRefreshPos = function(e) {
-    const perc = vid.calc.getCurrHoveredPerc(e.clientX);
-    const el = vid.el.guage_hover;
-    el.style.width = perc * 100 + "%";
-    let hoveredTimeStr = vid.calc.convertToMinAndSecStr(vid.el.screen.duration * perc);
-    el.setAttribute("data-content", hoveredTimeStr);
-}
