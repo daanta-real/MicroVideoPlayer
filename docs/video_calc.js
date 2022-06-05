@@ -7,7 +7,7 @@ vid.calc.convertToMinAndSecStr = function(sec) {
     return Math.floor(sec / 60) + ":" + $$.numberPad(Math.floor((sec - Math.floor(sec / 60) * 60)), 2);
 };
 
-// 현재 재생위치 관련 정보를 회신해 주는 함수
+// 비디오 객체의 현재 재생위치 관련 정보를 회신해 주는 함수
 vid.calc.getCurrVidPos = function() {
     const currPosRaw = Math.floor(vid.el.screen.currentTime); // 초
     const fullPosRaw = Math.floor(vid.el.screen.duration); // 초
@@ -25,6 +25,15 @@ vid.calc.getCurrVidPos = function() {
     };
     return info;
 };
+
+// 현재 마우스 위치와 전체 바 길이를 이용, 재생위치를 알아냄
+vid.calc.getNewCurrentTimeByMousePos = function() {
+    const currPoint = e.offsetX;
+    const fullWidth = vid.el.guage_full.offsetWidth;
+    const perc = currPoint / fullWidth;
+    const newTime = vid.el.screen.duration * perc;
+    console.log("currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc + " (newtime = " + newTime);
+}
 
 // 마우스 절대위치를 받아, 그에 해당하는 재생위치를 계산하여 퍼센티지(0 ~ 1)로 회신해 주는 함수
 vid.calc.getCurrHoveredPerc = function(currClientX) {

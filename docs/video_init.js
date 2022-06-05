@@ -16,10 +16,9 @@ vid.init.trigger = function() {
     vid.init.run();
 };
 
-// 3. 초기화 실행 함수
-vid.init.run = function() {
+// 3. 각종 엘리먼트 선언
+vid.init.elements = function() {
 
-    // 각종 엘리먼트 할당
     vid.el.container      = $$.el("vidContainer");
     vid.el.tapLayer       = $$.q("#vidContainer .tapBox");
     vid.el.tap_backward   = $$.q("#vidContainer .tapBox > div:first-child");
@@ -45,6 +44,13 @@ vid.init.run = function() {
     vid.el.icon_play      = $$.q("#vidContainer .tapBox .xi-play");
     vid.el.icon_backward  = $$.q("#vidContainer .tapBox .xi-backward");
     vid.el.icon_forward   = $$.q("#vidContainer .tapBox .xi-forward");
+
+}
+
+// 3. 초기화 실행 함수
+vid.init.run = function() {
+
+    vid.init.elements(); // 각종 엘리먼트 선언
 
     // 배속레이어 로드
     const list = vid.stats.speedList;
@@ -138,7 +144,7 @@ vid.init.run = function() {
     });
 
     // 4. 각종 게이지 관련
-    // 1) 재생 게이지
+    // 1) 재생 게이지 리프레셔
     // 재생위치가 조금이라도 변경되면, 리프레셔 실행
     vid.el.screen.addEventListener("timeupdate", vid.func.refreshHandlr);
     // 비디오가 로딩되었을 직후에는 메타데이터를 불러오기 전이므로, 위의 리프레시가 실행되어도 길이가 NaN으로 측정됨
@@ -146,27 +152,34 @@ vid.init.run = function() {
     // 이때, 핸들러 거쳤다가 스로틀링 때문에 막히면 사용자가 다음 조작하기 전까지 재실행이 안되므로,
     // 핸들러를 거치지 않고 바로 리프레시해 준다.
     vid.el.screen.addEventListener("loadedmetadata", vid.func.refresh);
-    // 게이지 내부 클릭 시 해당 재생 시점으로 이동
-    vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
-    vid.el.guage_full.addEventListener("click", vid.func.jumpByClk);
-    vid.el.guage_curr.addEventListener("click", vid.func.jumpByClk);
-//  vid.el.guage_hover.addEventListener("click", vid.func.jumpByClk);
 
-    // 2) 볼륨 게이지
+    // 2) 재생바 마우스오버 시 현재 재생위치 표시
+    vid.el.guage_box.addEventListener("mousemove", vid.func.hoverRefreshPos);
+    vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHideHandlr);
+
+    // 3) 재생 게이지를 마우스 드래그하여 재생 위치를 변경
+    // - 재생 게이지 위에서 마우스 버튼을 누르는 순간, 점프모드가 ON됨.
+    // - 점프모드가 ON된 상태에서 마우스를 움직이면, vid.func.mouseMoveHandlr에서 마우스이동을 감지,
+    //   해당 마우스 X위치로 재생위치 이동 처리를 하게 되며,
+    // - 점프모드가 ON된 상태에서 마우스를 떼면, vid.func.mouseMoveHandlr에서 마우스이동을 감지,
+    //   점프모드를 끄게 된다.
+    // - 드래그하다가 마우스가 게이지 밖으로 넘어갈 수도 있기 때문에, 관련 이벤트를 게이지 엘리먼트단에서 처리해서는 안 된다.
+    //   이에 따라 mouseout은 아예 처리하지 않으며, mousemove와 mouse도 window 객체단인 vid.el.mouseHandlr에서 처리한다.
+    vid.el.guage_curr.addEventListener("mousedown", function() {
+        console.log("점프모드 시작");
+        vid.el.stats.jumpMode = true;
+    });
+
+    // 4) 볼륨 게이지
     // 게이지 내부 클릭 시 해당 재생 볼륨으로 이동
     vid.el.volume_curr.addEventListener("click", vid.func.volumeByClk);
     vid.el.volume_full.addEventListener("click", vid.func.volumeByClk);
 
-    // 애니메이션 자동 청소 리스너 예약
+    // 5) 애니메이션 자동 청소 리스너 예약
     // 화면 중앙부 재생/뒤로가기/빨리감기 세 개의 아이콘은 애니메이션 재생 종료 시마다 애니메이션 상태 해제가 필요하다.
     vid.el.icon_play.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_backward.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_forward.addEventListener("animationend", animate_pop_clr_handlr);
-
-    // 5. 마우스오버 관련
-    // 1) 재생바 마우스오버 시 현재 재생위치 표시
-    vid.el.guage_box.addEventListener("mousemove", vid.func.hoverRefreshPos);
-    vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHideHandlr);
 
 
 

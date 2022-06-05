@@ -124,17 +124,6 @@ vid.func.toggleFullscreen = function() {
 
 
 
-// 특정 시점으로 이동
-vid.func.jumpTo = function(timeTo) {
-    const duration = vid.el.screen.duration;
-    const newTime = timeTo;
-    vid.el.screen.currentTime
-        = newTime < 0 ? 0
-        : newTime > duration ? duration
-        : newTime;
-    vid.func.refreshHandlr();
-};
-
 // 뒤로 점프
 vid.func.backward = function() {
     const amount = vid.stats.amountbackward;
@@ -149,18 +138,23 @@ vid.func.forward = function() {
     vid.func.jumpTo(vid.el.screen.currentTime + amount);
 };
 
-// (게이지에 클릭 이벤트 발생 시) 클릭한 시점으로 점프함
-vid.func.jumpByClk = function(e) {
-    // 버블링 방지 3단콤보
-    e.preventDefault(); e.stopPropagation(); e.cancelBubble = true;
-    // 클릭한 위치와 전체 바 길이를 이용, 재생위치를 알아냄
-    const currPoint = e.offsetX;
-    const fullWidth = vid.el.guage_full.offsetWidth;
-    const perc = currPoint / fullWidth;
-    const newTime = vid.el.screen.duration * perc;
-    console.log("currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc + " (newtime = " + newTime);
+// (점프모드 중 마우스 이동 시) 마우스가 이동된 시점으로 점프함
+vid.func.jumpEvent = function(e) {
+    // 마우스 위치에 해당하는 새로운 재생위치를 구함
+    var newTime = vid.calc.getNewCurrentTimeByMousePos(e);
     // 계산된 해당 재생위치로 이동
     vid.func.jumpTo(newTime);
+};
+
+// 특정 시점으로 이동
+vid.func.jumpTo = function(timeTo) {
+    const duration = vid.el.screen.duration;
+    const newTime = timeTo;
+    vid.el.screen.currentTime
+        = newTime < 0 ? 0
+        : newTime > duration ? duration
+        : newTime;
+    vid.func.refreshHandlr();
 };
 
 // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수

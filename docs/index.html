@@ -20,6 +20,7 @@
 <script type="text/javascript" src="video_init.js"></script> <!-- 비디오 재생기 라이브러리: 초기화 -->
 <script type="text/javascript" src="video_func.js"></script> <!-- 비디오 재생기 라이브러리: 각종 컨트롤러 및 함수 -->
 <script type="text/javascript" src="video_calc.js"></script> <!-- 비디오 재생기 라이브러리: 순수 계산 관련 -->
+<script type="text/javascript" src="video_mouse.js"></script> <!-- 비디오 재생기 라이브러리: 전역 마우스이벤트 처리 -->
 <script type="text/javascript" src="video_animate.js"></script> <!-- 비디오 재생기 라이브러리: 애니메이션 관련 -->
 
 <!-- JS -->
@@ -113,12 +114,15 @@ window.onload = function() {
 
 <h4>[미결과제]</h4>
 <p><pre>
-. 볼륨 게이지, 재생 게이지 드래그 가능하게 바꾸기
-. 재생 완료 시 다시보기 버튼으로 바꾸기 + 화면 좌하단 정지버튼은 재생버튼으로 모양 바꾸기
-. playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
-. iOS, MacOS에서 무한로딩 현상 발생 해결, 그외 모바일에서 구현 가능한지 테스트해 보기 (iOS / Android)
-. 미디어쿼리 똑바로 적용
-. 브라우저별 지원 가능한 동영상/코덱 테스트, 정리 필요함</pre></p>
+- 아래 두 함수 간의 관계를 다시 확인하고 통합할 수 있으면 통합할 것.
+  vid.calc.getNewCurrentTimeByMousePos
+  vid.calc.getCurrHoveredPerc
+- 볼륨 게이지, 재생 게이지 드래그 가능하게 바꾸기
+- 재생 완료 시 다시보기 버튼으로 바꾸기 + 화면 좌하단 정지버튼은 재생버튼으로 모양 바꾸기
+- playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
+- iOS, MacOS에서 무한로딩 현상 발생 해결, 그외 모바일에서 구현 가능한지 테스트해 보기 (iOS / Android)
+- 미디어쿼리 똑바로 적용
+- 브라우저별 지원 가능한 동영상/코덱 테스트, 정리 필요함</pre></p>
 
 <h4>[차후과제]</h4>
 <p><pre>
