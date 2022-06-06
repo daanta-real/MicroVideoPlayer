@@ -27,12 +27,18 @@ vid.calc.getCurrVidPos = function() {
 };
 
 // 현재 마우스 위치와 전체 바 길이를 이용, 재생위치를 알아냄
-vid.calc.getNewCurrentTimeByMousePos = function() {
+vid.calc.getNewCurrentTimeByMousePos = function(e) {
     const currPoint = e.offsetX;
     const fullWidth = vid.el.guage_full.offsetWidth;
     const perc = currPoint / fullWidth;
     const newTime = vid.el.screen.duration * perc;
-    console.log("currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc + " (newtime = " + newTime);
+    console.log("[getNewCurrentTimeByMousePos] currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc + " (newtime = " + newTime + ")");
+    return {
+        currPoint: currPoint,
+        fullWidth: fullWidth,
+        perc: perc,
+        newTime: newTime
+    };
 }
 
 // 마우스 절대위치를 받아, 그에 해당하는 재생위치를 계산하여 퍼센티지(0 ~ 1)로 회신해 주는 함수

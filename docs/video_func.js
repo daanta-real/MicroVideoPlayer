@@ -141,7 +141,9 @@ vid.func.forward = function() {
 // (점프모드 중 마우스 이동 시) 마우스가 이동된 시점으로 점프함
 vid.func.jumpEvent = function(e) {
     // 마우스 위치에 해당하는 새로운 재생위치를 구함
-    var newTime = vid.calc.getNewCurrentTimeByMousePos(e);
+    console.log("마우스 움직임 이벤트:", e);
+    var newTime = vid.calc.getNewCurrentTimeByMousePos(e).newTime;
+    console.log("jumpEvent에서 계산된 newTime:", newTime);
     // 계산된 해당 재생위치로 이동
     vid.func.jumpTo(newTime);
 };
@@ -150,6 +152,7 @@ vid.func.jumpEvent = function(e) {
 vid.func.jumpTo = function(timeTo) {
     const duration = vid.el.screen.duration;
     const newTime = timeTo;
+    console.log("jumpTo 실행됨. duration=", duration, " / newTime=", newTime);
     vid.el.screen.currentTime
         = newTime < 0 ? 0
         : newTime > duration ? duration
@@ -298,7 +301,6 @@ vid.func.controlHide = function() {
 vid.func.hoverHideHandlr = function() {
     if(vid.stats.tooltipHideTimer) return; // 0.5초 안에 재실행되면 return
     // 마지막 실행 0.5초 지난 후에만 아래 실행
-    console.log("hoverhide 등록하기");
     vid.stats.tooltipHideTimer = setTimeout(function() {
         clearTimeout(vid.stats.tooltipHideTimer);
         vid.stats.tooltipHideTimer = null;

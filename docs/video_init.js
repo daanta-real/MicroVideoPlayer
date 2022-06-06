@@ -164,10 +164,11 @@ vid.init.run = function() {
     // - 점프모드가 ON된 상태에서 마우스를 떼면, vid.func.mouseMoveHandlr에서 마우스이동을 감지,
     //   점프모드를 끄게 된다.
     // - 드래그하다가 마우스가 게이지 밖으로 넘어갈 수도 있기 때문에, 관련 이벤트를 게이지 엘리먼트단에서 처리해서는 안 된다.
-    //   이에 따라 mouseout은 아예 처리하지 않으며, mousemove와 mouse도 window 객체단인 vid.el.mouseHandlr에서 처리한다.
-    vid.el.guage_curr.addEventListener("mousedown", function() {
+    //   이에 따라 mouseout은 아예 처리하지 않으며, mousemove와 mouse도 window 객체단인 vid.mouseHandlr에서 처리한다.
+    vid.el.guage_full.addEventListener("mousedown", function(e) {
         console.log("점프모드 시작");
-        vid.el.stats.jumpMode = true;
+        vid.stats.jumpMode = true;
+        vid.func.jumpEvent(e); // 최초 클릭 시 한 번은 재생위치 변경시켜 줘야 한다.
     });
 
     // 4) 볼륨 게이지
@@ -180,6 +181,10 @@ vid.init.run = function() {
     vid.el.icon_play.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_backward.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_forward.addEventListener("animationend", animate_pop_clr_handlr);
+
+    // 6) 마우스 핸들러
+    window.addEventListener("mousemove", vid.mouseHandlr.move); // 움직일 때
+    window.addEventListener("mouseup", vid.mouseHandlr.up); // 마우스를 뗄 때
 
 
 
