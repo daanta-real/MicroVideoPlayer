@@ -139,7 +139,7 @@ div#vidContainer .volumeBox:hover .fg:after { /* 똥글뱅이 마우스오버 �
 }
 /* 재생 위치 영역에 마우스오버 시 툴팁 표시 */
 div#vidContainer .guageBox div.hover {
-    background: #b77d;
+    /* background: #b77d; 이건 안씀 이건 로딩바에 써야 함 */
 }
 div#vidContainer .guageBox div.hover:after { /* 마우스 위치에 해당하는 재생위치 알려주는 툴팁 영역 - 기본 설정 */
     /* hover가 해제되는 방향으로는 (mouseout 시) 딜레이를 준다.

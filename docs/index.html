@@ -43,6 +43,8 @@ window.onload = function() {
 <!-- 바디부 -->
 <body>
 
+    <div id="debug" style="border-style:solid; border-width:5px; height:50px; width:500px; border-color:transparent;"></div>
+
 <!-- 비디오 플레이어부 시작 -->
 <div id="vidContainer">
 
@@ -114,10 +116,7 @@ window.onload = function() {
 
 <h4>[미결과제]</h4>
 <p><pre>
-- 아래 두 함수 간의 관계를 다시 확인하고 통합할 수 있으면 통합할 것.
-  vid.calc.getNewCurrentTimeByMousePos
-  vid.calc.getCurrHoveredPerc
-- 볼륨 게이지, 재생 게이지 드래그 가능하게 바꾸기
+- 볼륨 게이지 드래그 가능하게 바꾸기
 - 재생 완료 시 다시보기 버튼으로 바꾸기 + 화면 좌하단 정지버튼은 재생버튼으로 모양 바꾸기
 - playsinline 문제 https://stackoverflow.com/questions/19521667/disable-fullscreen-iphone-video
 - iOS, MacOS에서 무한로딩 현상 발생 해결, 그외 모바일에서 구현 가능한지 테스트해 보기 (iOS / Android)
@@ -126,9 +125,11 @@ window.onload = function() {
 
 <h4>[차후과제]</h4>
 <p><pre>
-. 자바 연동 스트리밍 전송</pre></p>
+. 자바 연동 스트리밍 전송
+- 마우스오버 시 썸네일 표기 (자바 연동 필요)</pre></p>
 
 </div>
+
 
 
 </html>

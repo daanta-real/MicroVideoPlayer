@@ -124,6 +124,8 @@ vid.func.toggleFullscreen = function() {
 
 
 
+// 1) 공통 처리부
+
 // 뒤로 점프
 vid.func.backward = function() {
     const amount = vid.stats.amountbackward;
@@ -138,17 +140,17 @@ vid.func.forward = function() {
     vid.func.jumpTo(vid.el.screen.currentTime + amount);
 };
 
-// (점프모드 중 마우스 이동 시) 마우스가 이동된 시점으로 점프함
+// 재생위치를 마우스가 있는 시간대의 시점으로 점프함
 vid.func.jumpEvent = function(e) {
     // 마우스 위치에 해당하는 새로운 재생위치를 구함
     console.log("마우스 움직임 이벤트:", e);
-    var newTime = vid.calc.getNewCurrentTimeByMousePos(e).newTime;
+    var newTime = vid.calc.getTimeByPerc(e);
     console.log("jumpEvent에서 계산된 newTime:", newTime);
     // 계산된 해당 재생위치로 이동
     vid.func.jumpTo(newTime);
 };
 
-// 특정 시점으로 이동
+// 특정 지정된 시간의 시점으로 이동
 vid.func.jumpTo = function(timeTo) {
     const duration = vid.el.screen.duration;
     const newTime = timeTo;
@@ -162,12 +164,21 @@ vid.func.jumpTo = function(timeTo) {
 
 // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
 vid.func.hoverRefreshPos = function(e) {
-    const perc = vid.calc.getCurrHoveredPerc(e.clientX);
+    const perc = vid.calc.percentByMouse(e);
     const el = vid.el.guage_hover;
     el.style.width = perc * 100 + "%";
     let hoveredTimeStr = vid.calc.convertToMinAndSecStr(vid.el.screen.duration * perc);
     el.setAttribute("data-content", hoveredTimeStr);
 }
+
+// 참고: 재생 게이지를 마우스 드래그할 때 재생 위치를 변경
+// - 재생 게이지 위에서 마우스 버튼을 누르는 순간, 점프모드가 ON됨.
+// - 점프모드가 ON된 상태에서 마우스를 움직이면, vid.func.mouseMoveHandlr에서 마우스이동을 감지,
+//   해당 마우스 X위치로 재생위치 이동 처리를 하게 되며,
+// - 점프모드가 ON된 상태에서 마우스를 떼면, vid.func.mouseMoveHandlr에서 마우스이동을 감지,
+//   점프모드를 끄게 된다.
+// - 드래그하다가 마우스가 게이지 밖으로 넘어갈 수도 있기 때문에, 관련 이벤트를 게이지 엘리먼트단에서 처리해서는 안 된다.
+//   이에 따라 마우스 관련된 모든 처리는 객체단인 vid.mouseHandlr에서 처리한다.
 
 
 
@@ -193,6 +204,34 @@ vid.func.volumeByClk = function(e) {
 vid.func.volumeTo = function(perc) {
     vid.el.screen.volume = perc; // 엘리먼트의 수치 변경
     vid.el.volume_curr.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
+};
+
+
+
+// ★★★★★★★★★★★★★★★ 재생위치 반영 부분 ★★★★★★★★★★★★★★★
+
+
+
+// 재생위치 갱신 주기를 스로틀링으로 통제함. (1밀리초)
+vid.func.refreshHandlr = function() {
+    if(vid.stats.refreshThrottler) return; // 1밀리초 안에 다시 부르면 리턴
+    vid.stats.refreshThrottler = setTimeout(function() { // 1밀리초 되면
+        clearTimeout(vid.stats.refreshThrottler); // timeout 없애준 뒤
+        vid.stats.refreshThrottler = null; // null로 만듦
+        vid.func.refresh(); // 리프레시 실행
+    }, 0.1);
+};
+
+// 현재 재생위치 연관 정보를 전부 갱신하는 함수
+vid.func.refresh = function() {
+    const info = vid.calc.getCurrVidPos();
+    vid.el.span_currPos.innerText = info.playedTimeStr;
+    vid.el.guage_curr.style.width = info.playedPercStr + "%";
+};
+
+// 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
+vid.func.loadedPosTo = function(perc) {
+    vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
 };
 
 
@@ -248,34 +287,6 @@ vid.func.refreshSpeed = function() {
     vid.el.screen.playbackRate = speed; // 엘리먼트 속성 변경
     vid.el.label_speed.innerText = speedText; // 스피드 표시값 변경
     vid.func.closeSpeedMenu();
-};
-
-
-
-// ★★★★★★★★★★★★★★★ 재생위치 반영 부분 ★★★★★★★★★★★★★★★
-
-
-
-// 재생위치 갱신 주기를 스로틀링으로 통제함. (0.2초)
-vid.func.refreshHandlr = function() {
-    if(vid.stats.refreshThrottler) return; // 0.2초 안에 다시 부르면 리턴
-    vid.stats.refreshThrottler = setTimeout(function() { // 0.2초 되면
-        clearTimeout(vid.stats.refreshThrottler); // timeout 없애준 뒤
-        vid.stats.refreshThrottler = null; // null로 만듦
-        vid.func.refresh(); // 리프레시 실행
-    }, 200);
-};
-
-// 현재 재생위치 연관 정보를 전부 갱신하는 함수
-vid.func.refresh = function() {
-    const info = vid.calc.getCurrVidPos();
-    vid.el.span_currPos.innerText = info.playedTimeStr;
-    vid.el.guage_curr.style.width = info.playedPercStr + "%";
-};
-
-// 로딩율을 넣으면, 로딩바를 해당 크기로 변경해주는 함수
-vid.func.loadedPosTo = function(perc) {
-    vid.el.guage_loaded.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
 };
 
 

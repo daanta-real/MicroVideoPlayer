@@ -26,28 +26,29 @@ vid.calc.getCurrVidPos = function() {
     return info;
 };
 
-// 현재 마우스 위치와 전체 바 길이를 이용, 재생위치를 알아냄
-vid.calc.getNewCurrentTimeByMousePos = function(e) {
-    const currPoint = e.offsetX;
-    const fullWidth = vid.el.guage_full.offsetWidth;
-    const perc = currPoint / fullWidth;
-    const newTime = vid.el.screen.duration * perc;
-    console.log("[getNewCurrentTimeByMousePos] currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc + " (newtime = " + newTime + ")");
-    return {
-        currPoint: currPoint,
-        fullWidth: fullWidth,
-        perc: perc,
-        newTime: newTime
-    };
+// 현재 마우스 위치와 전체 바 길이를 이용, 마우스에 해당하는 재생시간점을 알아냄
+vid.calc.percentByMouse = function(e) {
+
+    // 재생바 너비
+    const barSize = vid.el.guage_full.offsetWidth;
+    
+    // 재생바 왼쪽 끝 지점
+    const rect = vid.el.guage_full.getBoundingClientRect();
+    const barStart = rect.left + window.scrollX;
+
+    // 마우스의 재생바의 위치%
+    const currMousePosOnBar = e.pageX - barStart;
+    let perc = currMousePosOnBar / barSize;
+    if(perc > 1) perc = 1;
+
+    return perc;
+
 }
 
-// 마우스 절대위치를 받아, 그에 해당하는 재생위치를 계산하여 퍼센티지(0 ~ 1)로 회신해 주는 함수
-vid.calc.getCurrHoveredPerc = function(currClientX) {
-    const rectObj = vid.el.guage_full.getBoundingClientRect(); // px
-    const width = rectObj.width;
-    const x = currClientX - rectObj.left;
-    let perc = x / width;
-    return perc > 1 ? 1
-            : perc < 0 ? 0
-            : perc;
-};
+// 현재 마우스위치에 해당하는 새 재생시간을 구함
+vid.calc.getTimeByPerc = function(e) {
+    const perc = vid.calc.percentByMouse(e);
+    let newTime = vid.el.screen.duration * perc;
+    if(newTime < 0) newTime = 0;
+    return newTime;
+}

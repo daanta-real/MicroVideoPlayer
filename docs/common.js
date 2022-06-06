@@ -68,6 +68,30 @@ function array_rollToPrev(arr, i) {
     return i == 0 ? arr[arr.length - 1] : arr[i - 1];
 }
 
+// 마우스가 특정 엘리먼트 안에 있을 때 이벤트가 발생한 것인지 true/false 판정하여 회신
+// 이때 elList에 단일 엘리먼트를 넣어도 된다.
+function isMouseInElement(e, elList) {
+
+    // 변수선언
+    let elementPointer = e.target;
+
+    // el이 배열로 들어오지 않았을 경우 배열화
+    if(!Array.isArray(elList)) elList = [elList];
+
+    // 모든 el요소들에 대해 아래 실행
+    for(let i = 0, el = elList[0]; i < elList.length; el = elList[++i]) {
+        // document까지 타고 올라가는 동안 el과 같은 이벤트가 있는지 확인
+        while(elementPointer !== document) {
+            if(elementPointer == el) return true;
+            elementPointer = elementPointer.parentNode;
+        }
+    }
+
+    // 여기까지 왔으면 못 찾았다. false 회신
+    return false;
+
+}
+
 // 모바일 환경에서 더블탭하면 확대가 되는 불편한 현상을 막기 위한 최신 솔루션 (특히 iOS)
 let lastTouchedTime = 0;
 window.addEventListener('touchend', function (e) {
