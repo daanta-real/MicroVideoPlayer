@@ -164,7 +164,7 @@ vid.func.jumpTo = function(timeTo) {
 
 // 재생위치 툴팁에 표시되는 해당 플레이타임을 갱신시켜주는 함수
 vid.func.hoverRefreshPos = function(e) {
-    const perc = vid.calc.percentByMouse(e);
+    const perc = vid.calc.guagePercentByMouse(e);
     const el = vid.el.guage_hover;
     el.style.width = perc * 100 + "%";
     let hoveredTimeStr = vid.calc.convertToMinAndSecStr(vid.el.screen.duration * perc);
@@ -186,22 +186,9 @@ vid.func.hoverRefreshPos = function(e) {
 
 
 
-// (게이지에 클릭 이벤트 발생 시) 클릭한 크기의 음량으로 음량 변경
-vid.func.volumeByClk = function(e) {
-    // 버블링 방지 3단콤보
-    e.preventDefault(); e.stopPropagation(); e.cancelBubble = true;
-    console.log(e);
-    // 클릭한 위치와 전체 바 길이를 이용, 볼륨 크기를 알아냄
-    const currPoint = e.offsetX;
-    const fullWidth = vid.el.volume_full.offsetWidth;
-    const perc = currPoint / fullWidth;
-    console.log("currPoint / full = ", currPoint + " / " + fullWidth, "\n=> perc = " + perc);
-    // 계산된 해당 크기의 볼륨으로 볼륨 변경
-    vid.func.volumeTo(perc);
-};
-
 // 해당 크기의 볼륨으로 볼륨 변경해주는 함수
-vid.func.volumeTo = function(perc) {
+vid.func.volumeEvent = function(e) {
+    const perc = vid.calc.volumePercentByMouse(e);
     vid.el.screen.volume = perc; // 엘리먼트의 수치 변경
     vid.el.volume_curr.style.width = (perc * 100) + "%"; // 엘리먼트의 너비 변경
 };

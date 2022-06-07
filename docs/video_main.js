@@ -14,5 +14,6 @@ vid.stats = {
     refreshThrottler: null, // 재생상태 리프레시 스로틀링 객체 자리
     controlHideDebouncer: null, // 컨트롤 숨기는 디바운싱 객체 자리
     loop: false,
-    jumpMode: false // 마우스 드래그 시 재생위치 점프를 실행할 것인지 여부
+    jumpMode: false, // 마우스 드래그 시 재생위치 점프를 실행할 것인지 여부
+    volumeMode: false // 마우스 드래그 시 볼륨 변경을 실행할 것인지 여부
 };

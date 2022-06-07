@@ -39,6 +39,7 @@ vid.init.elements = function() {
     vid.el.guage_curr     = $$.q("#vidContainer .guageBox .fg");
     vid.el.guage_loaded   = $$.q("#vidContainer .guageBox .loaded");
     vid.el.guage_hover    = $$.q("#vidContainer .guageBox .hover");
+    vid.el.volume_box     = $$.q("#vidContainer .volumeBox");
     vid.el.volume_full    = $$.q("#vidContainer .volumeBox .bg");
     vid.el.volume_curr    = $$.q("#vidContainer .volumeBox .fg");
     vid.el.icon_play      = $$.q("#vidContainer .tapBox .xi-play");
@@ -157,18 +158,13 @@ vid.init.run = function() {
     vid.el.guage_box.addEventListener("mousemove", vid.func.hoverRefreshPos);
     vid.el.guage_box.addEventListener("mouseleave", vid.func.hoverHideHandlr);
 
-    // 4) 볼륨 게이지
-    // 게이지 내부 클릭 시 해당 재생 볼륨으로 이동
-    vid.el.volume_curr.addEventListener("click", vid.func.volumeByClk);
-    vid.el.volume_full.addEventListener("click", vid.func.volumeByClk);
-
-    // 5) 애니메이션 자동 청소 리스너 예약
+    // 3) 애니메이션 자동 청소 리스너 예약
     // 화면 중앙부 재생/뒤로가기/빨리감기 세 개의 아이콘은 애니메이션 재생 종료 시마다 애니메이션 상태 해제가 필요하다.
     vid.el.icon_play.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_backward.addEventListener("animationend", animate_pop_clr_handlr);
     vid.el.icon_forward.addEventListener("animationend", animate_pop_clr_handlr);
 
-    // 6) 마우스 핸들러
+    // 4) 마우스 핸들러
     window.addEventListener("mousedown", vid.mouseHandlr.down); // 마우스를 눌렀을 때
     window.addEventListener("mousemove", vid.mouseHandlr.move); // 움직일 때
     window.addEventListener("mouseup", vid.mouseHandlr.up); // 마우스를 뗄 때

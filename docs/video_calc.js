@@ -26,8 +26,8 @@ vid.calc.getCurrVidPos = function() {
     return info;
 };
 
-// 현재 마우스 위치와 전체 바 길이를 이용, 마우스에 해당하는 재생시간점을 알아냄
-vid.calc.percentByMouse = function(e) {
+// 현재 마우스 위치와 전체 재생바 길이를 이용, 마우스에 해당하는 재생시간점을 알아냄
+vid.calc.guagePercentByMouse = function(e) {
 
     // 재생바 너비
     const barSize = vid.el.guage_full.offsetWidth;
@@ -47,8 +47,27 @@ vid.calc.percentByMouse = function(e) {
 
 // 현재 마우스위치에 해당하는 새 재생시간을 구함
 vid.calc.getTimeByPerc = function(e) {
-    const perc = vid.calc.percentByMouse(e);
+    const perc = vid.calc.guagePercentByMouse(e);
     let newTime = vid.el.screen.duration * perc;
     if(newTime < 0) newTime = 0;
     return newTime;
+}
+
+// 현재 마우스 위치와 전체 볼륨바 길이를 이용, 마우스에 해당하는 볼륨비율을 알아냄
+vid.calc.volumePercentByMouse = function(e) {
+
+    // 볼륨바 너비
+    const barSize = vid.el.volume_full.offsetWidth;
+    
+    // 볼륨바 왼쪽 끝 지점
+    const rect = vid.el.volume_full.getBoundingClientRect();
+    const barStart = rect.left + window.scrollX;
+
+    // 마우스의 볼륨바의 위치%
+    const currMousePosOnBar = e.pageX - barStart;
+    let perc = currMousePosOnBar / barSize;
+    if(perc > 1) perc = 1;
+
+    return perc;
+
 }
