@@ -40,6 +40,7 @@ vid.calc.guagePercentByMouse = function(e) {
     const currMousePosOnBar = e.pageX - barStart;
     let perc = currMousePosOnBar / barSize;
     if(perc > 1) perc = 1;
+    else if(perc < 0) perc = 0;
 
     return perc;
 
@@ -49,7 +50,6 @@ vid.calc.guagePercentByMouse = function(e) {
 vid.calc.getTimeByPerc = function(e) {
     const perc = vid.calc.guagePercentByMouse(e);
     let newTime = vid.el.screen.duration * perc;
-    if(newTime < 0) newTime = 0;
     return newTime;
 }
 
@@ -67,6 +67,7 @@ vid.calc.volumePercentByMouse = function(e) {
     const currMousePosOnBar = e.pageX - barStart;
     let perc = currMousePosOnBar / barSize;
     if(perc > 1) perc = 1;
+    else if(perc < 0) perc = 0;
 
     return perc;
 
