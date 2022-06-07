@@ -95,10 +95,26 @@ function isMouseInElement(e, elList) {
 // 모바일 환경에서 더블탭하면 확대가 되는 불편한 현상을 막기 위한 최신 솔루션 (특히 iOS)
 let lastTouchedTime = 0;
 window.addEventListener('touchend', function (e) {
-  const now = (new Date()).getTime();
-  if (now - lastTouchedTime <= 300){
+    const now = (new Date()).getTime();
+    if (now - lastTouchedTime <= 300){
     // 버블링 방지 3단콤보
     e.preventDefault(); e.stopPropagation(); e.cancelBubble = true;
-  }
-  lastTouchedTime = now;
+    }
+    lastTouchedTime = now;
 }, false);
+
+// 특정 엘리먼트를 풀스크린 시킴
+function fullscreenOn(el) {
+    if(el.requestFullscreen) return el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+    else if(el.mozRequestFullScreen) return el.mozRequestFullScreen();
+    else if(el.msRequestFullscreen) return el.msRequestFullscreen();
+}
+
+// 풀스크린으로부터 탈출
+function fullscreenOff() {
+    if(document.exitFullscreen) return document.exitFullscreen();
+    else if(document.webkitCancelFullscreen) return document.webkitCancelFullscreen();
+    else if(document.mozCancelFullScreen) return document.mozCancelFullScreen();
+    else if(document.msExitFullscreen) return document.msExitFullscreen();
+}

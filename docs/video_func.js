@@ -114,8 +114,8 @@ vid.func.refreshLoopMode = function() {
 
 // 풀스크린 토글
 vid.func.toggleFullscreen = function() {
-    $$.classToggle(vid.el.container, "fullScreen");
-    console.log("풀스크린 토글");
+    if(!document.fullscreenElement) fullscreenOn(vid.el.container);
+    else fullscreenOff();
 };
 
 

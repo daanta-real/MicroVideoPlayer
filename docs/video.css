@@ -243,23 +243,9 @@ input#videoPlayer_spdChkBox:checked ~ .speedMenuOptions > span:hover { /* 배속
 
 
 
+/* 볼륨 박스 */
 div#vidContainer .volumeBox {
     width:100px;
-}
-
-
-
-/* 전체화면 모드 시 동작 설정 */
-div#vidContainer.fullScreen { /* 비디오 전체 콘테이너 */
-    z-index:99; /* 화면의 최상위에 와야 한다 */
-    position:fixed; left:0; top:0; width:100%; height:100%; /* 전체화면 */
-    background-color: black;
-}
-div#vidContainer.fullScreen > video { /* 비디오 엘리먼트 */
-    position:fixed; left:0; top:0; width:100%; height:100%;
-}
-div#vidContainer.fullScreen > .bottomBox > .rightBlock > .fullScreenBtn { /* 풀스크린 버튼 */
-    position:absolute; left:150px; bottom:20px;
 }
 
 
