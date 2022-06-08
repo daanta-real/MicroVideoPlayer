@@ -169,6 +169,10 @@ vid.init.run = function() {
     window.addEventListener("mousemove", vid.mouseHandlr.move); // 움직일 때
     window.addEventListener("mouseup", vid.mouseHandlr.up); // 마우스를 뗄 때
 
+    // 재생 종료 시 재생 버튼을 멈춤 버튼으로 바꿈
+    vid.el.screen.addEventListener('ended', vid.func.finished);
+
+
 
 
     console.log("비디오 플레이어 초기화 완료.");

@@ -3,6 +3,19 @@
 vid.func = {};
 
 
+/*
+1. 키보드 부분
+2. 재생 컨트롤 부분
+3. 반복기능 부분
+4. 풀스크린 부분
+5. 재생 제어 부분
+6. 볼륨 부분
+7. 재생위치 반영 부분
+8. 배속 기능 부분
+9. 컨트롤러 숨김처리 부분
+*/
+
+
 // ★★★★★★★★★★★★★★★ 키보드 부분 ★★★★★★★★★★★★★★★
 
 
@@ -57,8 +70,7 @@ vid.func.togglePlay = function() {
         // 실제 비디오 상태 전환
         vid.el.screen.pause();
         // 컨트롤바 아이콘
-        btnEl.classList.remove("xi-pause");
-        btnEl.classList.add("xi-play");
+        vid.func.finished();
         animate_heartbeat(btnEl);
         // 중앙 아이콘
         iconEl.classList.remove("xi-play");
@@ -71,8 +83,7 @@ vid.func.togglePlay = function() {
         // 실제 비디오 상태 전환
         vid.el.screen.play();
         // 컨트롤바 아이콘
-        btnEl.classList.remove("xi-play");
-        btnEl.classList.add("xi-pause");
+        vid.func.started();
         animate_heartbeat(btnEl);
         // 중앙 아이콘
         iconEl.classList.remove("xi-pause");
@@ -84,7 +95,17 @@ vid.func.togglePlay = function() {
 
 };
 
+// 재생 시작 시 실행되어 멈춤버튼을 재생버튼으로 바꿈
+vid.func.started = function() {
+    vid.el.btn_play.classList.remove("xi-play");
+    vid.el.btn_play.classList.add("xi-pause");
+};
 
+// 재생 종료 시 실행되어 재생버튼을 멈춤버튼으로 바꿈
+vid.func.finished = function() {
+    vid.el.btn_play.classList.remove("xi-pause");
+    vid.el.btn_play.classList.add("xi-play");
+};
 
 // ★★★★★★★★★★★★★★★ 반복기능 부분 ★★★★★★★★★★★★★★★
 
@@ -120,7 +141,7 @@ vid.func.toggleFullscreen = function() {
 
 
 
-// ★★★★★★★★★★★★★★★ 재생위치 제어 부분 ★★★★★★★★★★★★★★★
+// ★★★★★★★★★★★★★★★ 재생 제어 부분 ★★★★★★★★★★★★★★★
 
 
 
@@ -199,10 +220,10 @@ vid.func.volumeEvent = function(e) {
 
 
 
-// 재생위치 갱신 주기를 스로틀링으로 통제함. (1밀리초)
+// 재생위치 갱신 주기를 스로틀링으로 통제함. (0.1밀리초)
 vid.func.refreshHandlr = function() {
-    if(vid.stats.refreshThrottler) return; // 1밀리초 안에 다시 부르면 리턴
-    vid.stats.refreshThrottler = setTimeout(function() { // 1밀리초 되면
+    if(vid.stats.refreshThrottler) return; // 0.1밀리초 안에 다시 부르면 리턴
+    vid.stats.refreshThrottler = setTimeout(function() { // 0.1밀리초 되면
         clearTimeout(vid.stats.refreshThrottler); // timeout 없애준 뒤
         vid.stats.refreshThrottler = null; // null로 만듦
         vid.func.refresh(); // 리프레시 실행
