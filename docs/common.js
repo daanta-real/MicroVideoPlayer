@@ -103,18 +103,20 @@ window.addEventListener('touchend', function (e) {
     lastTouchedTime = now;
 }, false);
 
-// 특정 엘리먼트를 풀스크린 시킴
+// 특정 엘리먼트를 풀스크린 시킴. (CSS CLASS FULLSCREEN 先정의 필요함)
 function fullscreenOn(el) {
-    if(el.requestFullscreen) return el.requestFullscreen();
-    else if(el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
-    else if(el.mozRequestFullScreen) return el.mozRequestFullScreen();
-    else if(el.msRequestFullscreen) return el.msRequestFullscreen();
+         if(el.requestFullscreen      ) el.requestFullscreen      ();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if(el.mozRequestFullScreen   ) el.mozRequestFullScreen   ();
+    else if(el.msRequestFullscreen    ) el.msRequestFullscreen    ();
+    el.classList.add("fullScreen");
 }
 
-// 풀스크린으로부터 탈출
+// 풀스크린으로부터 탈출 (CSS CLASS FULLSCREEN 先정의 필요함)
 function fullscreenOff() {
-    if(document.exitFullscreen) return document.exitFullscreen();
-    else if(document.webkitCancelFullscreen) return document.webkitCancelFullscreen();
-    else if(document.mozCancelFullScreen) return document.mozCancelFullScreen();
-    else if(document.msExitFullscreen) return document.msExitFullscreen();
+         if(document.exitFullscreen        ) document.exitFullscreen        ();
+    else if(document.webkitCancelFullscreen) document.webkitCancelFullscreen();
+    else if(document.mozCancelFullScreen   ) document.mozCancelFullScreen   ();
+    else if(document.msExitFullscreen      ) document.msExitFullscreen      ();
+    el.classList.remove("fullScreen");
 }

@@ -5,6 +5,9 @@
     ※ IE에서 () => {} 식, css var, for of, for in 등이 안 먹히므로, 크로스브라우징 구현 시 사용금지
 */
 
+/* 초레벨 공통클래스 */
+.fullScreen { width:100vw; height:100vh; }
+
 /* 1레벨 (기초영역 분할) */
 div#vidContainer {
     position:relative; background:black;
