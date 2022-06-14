@@ -1,12 +1,31 @@
 /******************** CSS부 시작 ********************/
 /*
-    자식 노드값의 변경을 부모가 감지하는 것은 CSS3까지 와서도 불가능하다.
-    따라서 JS addEventListener로 감지해야만 한다.
-    ※ IE에서 () => {} 식, css var, for of, for in 등이 안 먹히므로, 크로스브라우징 구현 시 사용금지
+자식 노드값의 변경을 부모가 감지하는 것은 CSS3까지 와서도 불가능하다.
+따라서 JS addEventListener로 감지해야만 한다.
+※ IE에서 () => {} 식, css var, for of, for in 등이 안 먹히므로, 크로스브라우징 구현 시 사용금지
+*/
+
+/*
+미디어쿼리는 부트스트랩의 화면 분할점 기준을 일부 차용하였다.
+480 미만은 고려하지 않는다. (아이폰3 옵티머스1 등등..)
+480~768 (소형기기) ※ 아패미니(width 768px), 갤2
+769~1200 (태블릿 세로) ※ 아패미니 이상의 일반적인 휴대용 태블릿 넓이
+1201~ (PC) ※ 큰 태블릿 세로, 노트북, PC
 */
 
 /* 초레벨 공통클래스 */
 .fullScreen { width:100vw; height:100vh; }
+
+/* 화면 너비 설정 */
+@media screen and (min-width: 480px) and (max-width: 768px) {
+    :root {--volume-box-width: calc(6.8vw - 70); } /* 70px에서부터 100px까지 선형 증가 */
+}
+@media screen and (min-width: 480px) and (max-width: 768px) {
+    :root {--volume-box-width: 100px; }
+}
+@media (min-width: 1200px) {
+    :root {--volume-box-width: 100px; }
+}
 
 /* 1레벨 (기초영역 분할) */
 div#vidContainer {
@@ -16,8 +35,8 @@ div#vidContainer {
     touch-action: manipulation; /* 모바일 환경에서 더블탭 시 확대 방지 */
 }
 @media (min-width:768px) { /* PC */
-   /* div#vidContainer { width:40rem; height:25rem; }*/
-   div#vidContainer { width:80rem; height:50rem; }
+   /* div#vidContainer { width:40rem; height:25rem; }
+   div#vidContainer { width:80rem; height:50rem; }*/
 }
 /* 미디어쿼리 필요 시 아래 주석대로 셋팅해주면 된다. PC/모바일(세로)/모바일(가로) 순이다.
 ※ 화면 크기 분할의 기준은 아이패드 미니 (768px)
