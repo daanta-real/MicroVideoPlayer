@@ -1,5 +1,7 @@
 /******************** 공용 라이브러리 ********************/
-let $$ = {};
+
+const $$ = {};
+
 // 엘리먼트 획득
 $$.el   = function(id)    { return document.getElementById(id); }
 $$.q    = function(query) { return document.querySelector(query); }
@@ -120,3 +122,7 @@ function fullscreenOff() {
     else if(document.msExitFullscreen      ) document.msExitFullscreen      ();
     el.classList.remove("fullScreen");
 }
+
+// vw,vh 반환
+const vw = (n) => window.innerWidth  * n / 100;
+const vh = (n) => window.innerHeight * n / 100;
