@@ -18,9 +18,21 @@
 볼륨박스: 70px / 70 ~ 100px 선형증가 / 100px / em 단위로 고정
 */
 
-:root {
-    --volume-box-width: max(70px /*~480px*/, calc( - 70px))
-}
+@media screen and (max-width: 480px) { :root {
+    --volume-box-width: 70px;
+}}
+
+@media screen and (min-width: 480px) and (max-width: 768px) { :root {
+    --volume-box-width: calc(70 + (30 * 0.1041667)px); /*70px에서부터 100px까지 선형 증가*/
+}}
+
+@media screen and (min-width: 769px) and (max-width: 1200px) { :root {
+    --volume-box-width: 100px;
+}}
+
+@media (min-width: 1201px) { :root {
+    --volume-box-width: 75.0625em;
+}}
 
 /*
 @media screen and (max-width: 480px) { :root { 480px 미만은 구체적으로 조정하지는 않을 것이다. (아이폰3 옵티머스1 등등..)
