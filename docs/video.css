@@ -19,18 +19,22 @@
 */
 
 @media screen and (max-width: 480px) { :root {
-    --volume-box-width: 70px;
+    --viedo-screen-size: 500px;
+    --volume-box-width: 14.583333vw;
 }}
 
 @media screen and (min-width: 480px) and (max-width: 768px) { :root {
-    --volume-box-width: calc(70 + (30 * 0.1041667)px); /*70px에서부터 100px까지 선형 증가*/
+    --viedo-screen-size: 500px;
+    --volume-box-width: 13.02vw; /*70px에서부터 100px까지 선형 증가*/
 }}
 
 @media screen and (min-width: 769px) and (max-width: 1200px) { :root {
+    --viedo-screen-size: 500px;
     --volume-box-width: 100px;
 }}
 
 @media (min-width: 1201px) { :root {
+    --viedo-screen-size: 500px;
     --volume-box-width: 75.0625em;
 }}
 
@@ -57,8 +61,11 @@ div#vidContainer {
     touch-action: manipulation; /* 모바일 환경에서 더블탭 시 확대 방지 */
 }
 @media (min-width:768px) { /* PC */
-   /* div#vidContainer { width:40rem; height:25rem; }
-   div#vidContainer { width:80rem; height:50rem; }*/
+    div#vidContainer {
+        width: var(--viedo-screen-size);
+        height: calc(var(--viedo-screen-size) * 0.5625);
+    }
+    div#vidContainer { width:80rem; height:50rem; }*/
 }
 /* 미디어쿼리 필요 시 아래 주석대로 셋팅해주면 된다. PC/모바일(세로)/모바일(가로) 순이다.
 ※ 화면 크기 분할의 기준은 아이패드 미니 (768px)
@@ -94,7 +101,7 @@ div#vidContainer .tapBox { /* 2. 중앙부 상단 클릭 대영역 */
 }
 div#vidContainer .guageBox, div#vidContainer .volumeBox { /* 3. 중앙부 하단 재생게이지 영역 (+하단부 볼륨게이지) */
     position:relative; display:flex; align-items: center; justify-content: center;
-    width:calc(100% - 60px); height:20px; padding:0 15px; margin:auto;
+    height:20px; padding:0 15px; margin:auto;
 }
 div#vidContainer .bottomBox { /* 4. 하단부 컨트롤러 버튼 영역 */
     display:flex; flex-direction:row;
@@ -134,6 +141,9 @@ div#vidContainer .bottomBox > .rightBlock { /* 배속버튼, 풀스크린버튼 
 
 
 /* 재생 위치 게이지 */
+div#vidContainer .guageBox {
+    width:calc(100% - 60px);
+}
 div#vidContainer .guageBox div,
 div#vidContainer .guageBox .fg:after,
 div#vidContainer .volumeBox div,
